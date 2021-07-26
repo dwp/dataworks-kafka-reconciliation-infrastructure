@@ -1,8 +1,8 @@
 jobs:
   - name: update-pipeline
     plan:
-      - get: dataworks-repo-template-terraform
-        resource: dataworks-repo-template-terraform-update-pipeline
+      - get: dataworks-kafka-reconciliation-infrastructure
+        resource: dataworks-kafka-reconciliation-infrastructure-update-pipeline
         trigger: true
       - task: aviator
         config:
@@ -20,10 +20,10 @@ jobs:
                 sed -i 's/fly/nofly/' aviator.yml
                 /usr/bin/aviator -f aviator.yml
                 mv aviator_pipeline.yml ../pipeline
-            dir: dataworks-repo-template-terraform
+            dir: dataworks-kafka-reconciliation-infrastructure
           inputs:
-            - name: dataworks-repo-template-terraform
+            - name: dataworks-kafka-reconciliation-infrastructure
           outputs:
             - name: pipeline
-      - set_pipeline: dataworks-repo-template-terraform
+      - set_pipeline: dataworks-kafka-reconciliation-infrastructure
         file: pipeline/aviator_pipeline.yml

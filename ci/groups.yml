@@ -5,7 +5,7 @@ groups:
       - qa
   - name: pull-request
     jobs:
-      - dataworks-repo-template-terraform-pr
+      - dataworks-kafka-reconciliation-infrastructure-pr
   - name: update-pipeline
     jobs:
       - update-pipeline
