@@ -1,0 +1,76 @@
+terraform {
+  required_version = "{{terraform.terraform_13_version}}"
+
+  backend "s3" {
+    bucket         = "{{terraform.state_file_bucket}}"
+    key            = "terraform/dataworks/dataworks-repo-template-terraform.tfstate"
+    region         = "{{terraform.state_file_region}}"
+    encrypt        = true
+    kms_key_id     = "arn:aws:kms:{{terraform.state_file_region}}:{{terraform.state_file_account}}:key/{{terraform.state_file_kms_key}}"
+    dynamodb_table = "remote_state_locks"
+  }
+}
+
+provider "aws" {
+  version = "~> 3.42.0"
+  region  = "{{terraform.provider_region}}"
+
+  assume_role {
+    role_arn = "arn:aws:iam::${lookup(local.account, local.environment)}:role/${var.assume_role}"
+  }
+
+  default_tags {
+    tags = local.common_repo_tags
+  }
+}
+
+module "dataworks_common" {
+  source                = "{{terraform.dataworks_common_module_name}}"
+  version               = "{{terraform.dataworks_common_module_version}}"
+  tag_value_environment = local.environment
+}
+
+locals {
+  name        = "dataworks-repo-template-terraform"
+  environment = terraform.workspace == "default" ? "development" : terraform.workspace
+
+  account = {
+    {%- for key, value in accounts.items() %}
+      {{key}} = "{{value}}"
+    {%- endfor %}
+  }
+
+  persistence_tag_value = {
+    development = "mon-fri,08:00-18:00"
+    qa          = "Ignore"
+    integration = "mon-fri,08:00-18:00"
+    preprod     = "Ignore"
+    production  = "Ignore"
+  }
+
+  auto_shutdown_tag_value = {
+    development = "True"
+    qa          = "False"
+    integration = "True"
+    preprod     = "False"
+    production  = "False"
+  }
+
+  overridden_tags = {
+    Role         = "repo_template_terraform"
+    Owner        = "dataworks-repo-template-terraform"
+    Persistence  = local.persistence_tag_value[local.environment]
+    AutoShutdown = local.auto_shutdown_tag_value[local.environment]
+  }
+
+  common_repo_tags = "${merge(module.dataworks_common.common_tags, local.overridden_tags)}"
+
+  cidr_block = {
+  {%- for environment, ranges in cidr_block.items() %}
+      {{ environment }} = {
+        {%- for key, value in ranges.items() %}
+          {{ key }} = "{{ value }}"{% endfor %}
+      } {%- endfor %}
+  }
+}
+
