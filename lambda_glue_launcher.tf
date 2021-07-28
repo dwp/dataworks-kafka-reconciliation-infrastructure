@@ -7,6 +7,23 @@ variable "glue_launcher_zip" {
   }
 }
 
+locals {
+  manifest_bucket_id = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket.id
+  manifest_import_type = "historic"
+  manifest_snapshot_type = "full"
+  manifest_data_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.database_name
+
+  manifest_s3_input_parquet_location = data.terraform_remote_state.aws-internal-compute.outputs.manifest_s3_prefixes.parquet
+
+  manifest_counts_parquet_table_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_counts_parquet
+  manifest_mismatched_timestamps_table_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_mismatched_timestamps_parquet
+  missing_imports_parquet_table_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_missing_imports_parquet
+  missing_exports_parquet_table_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_missing_exports_parquet
+
+  manifest_s3_input_parquet_location_base = "s3://${local.manifest_bucket_id}/${local.manifest_s3_input_parquet_location}/${local.manifest_import_type}_${local.manifest_snapshot_type}"
+  manifest_s3_output_location = data.terraform_remote_state.aws-ingestion.outputs.manifest_comparison_parameters.query_output_s3_prefix
+}
+
 resource "aws_lambda_function" "glue_launcher" {
   filename      = "${var.glue_launcher_zip["base_path"]}/emr-launcher-${var.glue_launcher_zip["version"]}.zip"
   function_name = "glue_launcher"
@@ -29,23 +46,23 @@ resource "aws_lambda_function" "glue_launcher" {
       APPLICATION                                              = "glue_launcher"
       LOG_LEVEL                                                = "INFO"
       JOB_QUEUE_DEPENDENCIES                                   = "batch_corporate_storage_coalescer_long_running,batch_corporate_storage_coalescer"
-      MISSING_IMPORTS_TABLE_NAME                               = ""
-      MISSING_EXPORTS_TABLE_NAME                               = ""
-      COUNTS_TABLE_NAME                                        = ""
-      MISMATCHED_TIMESTAMPS_TABLE_NAME                         = ""
       ETL_GLUE_JOB_NAME                                        = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined
+      MANIFEST_COUNTS_PARQUET_TABLE_NAME                       = "${local.manifest_data_name}.${local.manifest_counts_parquet_table_name}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
+      MANIFEST_MISMATCHED_TIMESTAMPS_TABLE_NAME                = "${local.manifest_data_name}.${local.manifest_mismatched_timestamps_table_name}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
+      MANIFEST_MISSING_IMPORTS_TABLE_NAME                      = "${local.manifest_data_name}.${local.missing_imports_parquet_table_name}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
+      MANIFEST_MISSING_EXPORTS_TABLE_NAME                      = "${local.manifest_data_name}.${local.missing_exports_parquet_table_name}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
       MANIFEST_S3_INPUT_LOCATION_IMPORT_HISTORIC               = data.terraform_remote_state.aws-internal-compute.outputs.manifest_comparison_parameters.historic_folder
       MANIFEST_S3_INPUT_LOCATION_EXPORT_HISTORIC               = data.terraform_remote_state.aws-ingestion.outputs.manifest_comparison_parameters.query_output_s3_prefix
       MANIFEST_COMPARISON_CUT_OFF_DATE_START                   = "" # Lambda defaults to 1983-11-15T09:09:55.000 if not set
       MANIFEST_COMPARISON_CUT_OFF_DATE_END                     = "" # Lambda defaults to 2099-11-15T09:09:55.000 if not set
       MANIFEST_COMPARISON_MARGIN_OF_ERROR_MINUTES              = "" # Lambda defaults to 2 if not set
-      MANIFEST_COMPARISON_SNAPSHOT_TYPE                        = "full"
-      MANIFEST_COMPARISON_IMPORT_TYPE                          = "historic"
-      MANIFEST_S3_INPUT_PARQUET_LOCATION_MISSING_IMPORT        = ""
-      MANIFEST_S3_INPUT_PARQUET_LOCATION_MISSING_EXPORT        = ""
-      MANIFEST_S3_INPUT_PARQUET_LOCATION_COUNTS                = ""
-      MANIFEST_S3_INPUT_PARQUET_LOCATION_MISMATCHED_TIMESTAMPS = ""
-      MANIFEST_S3_OUTPUT_LOCATION                              = ""
+      MANIFEST_COMPARISON_SNAPSHOT_TYPE                        = local.manifest_snapshot_type
+      MANIFEST_COMPARISON_IMPORT_TYPE                          = local.manifest_import_type
+      MANIFEST_S3_INPUT_PARQUET_LOCATION_MISSING_IMPORT        = "${local.manifest_s3_input_parquet_location_base}/missing_import"
+      MANIFEST_S3_INPUT_PARQUET_LOCATION_MISSING_EXPORT        = "${local.manifest_s3_input_parquet_location_base}/missing_export"
+      MANIFEST_S3_INPUT_PARQUET_LOCATION_COUNTS                = "${local.manifest_s3_input_parquet_location_base}/counts"
+      MANIFEST_S3_INPUT_PARQUET_LOCATION_MISMATCHED_TIMESTAMPS = "${local.manifest_s3_input_parquet_location_base}/mismatched_timestamps"
+      MANIFEST_S3_OUTPUT_LOCATION                              = "s3://${local.manifest_bucket_id}/${manifest_s3_output_location}_${local.manifest_import_type}_${local.manifest_snapshot_type}/templates"
     }
   }
 
