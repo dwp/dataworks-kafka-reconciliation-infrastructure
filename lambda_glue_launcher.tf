@@ -53,9 +53,9 @@ resource "aws_lambda_function" "glue_launcher" {
       MANIFEST_MISSING_EXPORTS_TABLE_NAME                      = "${local.manifest_data_name}.${local.missing_exports_parquet_table_name}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
       MANIFEST_S3_INPUT_LOCATION_IMPORT_HISTORIC               = data.terraform_remote_state.aws-internal-compute.outputs.manifest_comparison_parameters.historic_folder
       MANIFEST_S3_INPUT_LOCATION_EXPORT_HISTORIC               = data.terraform_remote_state.aws-ingestion.outputs.manifest_comparison_parameters.query_output_s3_prefix
-      MANIFEST_COMPARISON_CUT_OFF_DATE_START                   = "" # Lambda defaults to 1983-11-15T09:09:55.000 if not set
-      MANIFEST_COMPARISON_CUT_OFF_DATE_END                     = "" # Lambda defaults to 2099-11-15T09:09:55.000 if not set
-      MANIFEST_COMPARISON_MARGIN_OF_ERROR_MINUTES              = "" # Lambda defaults to 2 if not set
+      MANIFEST_COMPARISON_CUT_OFF_DATE_START                   = "PREVIOUS_DAY_MIDNIGHT" # Set an EPOCH time in millisecond, else lambda will calculate date.
+      MANIFEST_COMPARISON_CUT_OFF_DATE_END                     = "TODAY_MIDNIGHT" # Set an EPOCH time in millisecond, else lambda will calculate date.
+      MANIFEST_COMPARISON_MARGIN_OF_ERROR_MINUTES              = "2" # Lambda defaults to 2 if not set
       MANIFEST_COMPARISON_SNAPSHOT_TYPE                        = local.manifest_snapshot_type
       MANIFEST_COMPARISON_IMPORT_TYPE                          = local.manifest_import_type
       MANIFEST_S3_INPUT_PARQUET_LOCATION_MISSING_IMPORT        = "${local.manifest_s3_input_parquet_location_base}/missing_import"
