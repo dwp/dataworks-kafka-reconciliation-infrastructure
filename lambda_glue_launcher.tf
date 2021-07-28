@@ -1,0 +1,126 @@
+variable "glue_launcher_zip" {
+  type = map(string)
+
+  default = {
+    base_path = ""
+    version   = ""
+  }
+}
+
+resource "aws_lambda_function" "glue_launcher" {
+  filename      = "${var.glue_launcher_zip["base_path"]}/emr-launcher-${var.glue_launcher_zip["version"]}.zip"
+  function_name = "glue_launcher"
+  role          = aws_iam_role.glue_launcher_lambda_role.arn
+  handler       = "glue_launcher_lambda.glue_launcher.handler"
+  runtime       = "python3.7"
+  source_code_hash = filebase64sha256(
+    format(
+      "%s/glue-launcher-%s.zip",
+      var.glue_launcher_zip["base_path"],
+      var.glue_launcher_zip["version"]
+    )
+  )
+  publish = false
+  timeout = 60
+
+  environment {
+    variables = {
+      ENVIRONMENT                                              = local.environment
+      APPLICATION                                              = "glue_launcher"
+      LOG_LEVEL                                                = "INFO"
+      JOB_QUEUE_DEPENDENCIES                                   = "batch_corporate_storage_coalescer_long_running,batch_corporate_storage_coalescer"
+      MISSING_IMPORTS_TABLE_NAME                               = ""
+      MISSING_EXPORTS_TABLE_NAME                               = ""
+      COUNTS_TABLE_NAME                                        = ""
+      MISMATCHED_TIMESTAMPS_TABLE_NAME                         = ""
+      ETL_GLUE_JOB_NAME                                        = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined
+      MANIFEST_S3_INPUT_LOCATION_IMPORT_HISTORIC               = data.terraform_remote_state.aws-internal-compute.outputs.manifest_comparison_parameters.historic_folder
+      MANIFEST_S3_INPUT_LOCATION_EXPORT_HISTORIC               = data.terraform_remote_state.aws-ingestion.outputs.manifest_comparison_parameters.query_output_s3_prefix
+      MANIFEST_COMPARISON_CUT_OFF_DATE_START                   = "" # Lambda defaults to 1983-11-15T09:09:55.000 if not set
+      MANIFEST_COMPARISON_CUT_OFF_DATE_END                     = "" # Lambda defaults to 2099-11-15T09:09:55.000 if not set
+      MANIFEST_COMPARISON_MARGIN_OF_ERROR_MINUTES              = "" # Lambda defaults to 2 if not set
+      MANIFEST_COMPARISON_SNAPSHOT_TYPE                        = "full"
+      MANIFEST_COMPARISON_IMPORT_TYPE                          = "historic"
+      MANIFEST_S3_INPUT_PARQUET_LOCATION_MISSING_IMPORT        = ""
+      MANIFEST_S3_INPUT_PARQUET_LOCATION_MISSING_EXPORT        = ""
+      MANIFEST_S3_INPUT_PARQUET_LOCATION_COUNTS                = ""
+      MANIFEST_S3_INPUT_PARQUET_LOCATION_MISMATCHED_TIMESTAMPS = ""
+      MANIFEST_S3_OUTPUT_LOCATION                              = ""
+    }
+  }
+
+  tags = {
+    Name = "glue_launcher"
+  }
+}
+
+resource "aws_iam_role" "glue_launcher_lambda_role" {
+  name               = "glue_launcher_lambda_role"
+  assume_role_policy = data.aws_iam_policy_document.glue_launcher_lambda_assume_role.json
+  tags = {
+    Name = "glue_launcher_lambda_role"
+  }
+}
+
+data "aws_iam_policy_document" "glue_launcher_lambda_assume_role" {
+  statement {
+    sid     = "GlueLauncherLambdaAssumeRolePolicy"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      identifiers = ["lambda.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+
+data "aws_iam_policy_document" "glue_launcher_lambda" {
+  statement {
+    sid = "AllowBatchListJobs"
+    effect = "Allow"
+    actions = [
+      "batch:ListJobs",
+    ]
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
+    sid = "AllowGlueJobStart"
+    effect = "Allow"
+    actions = [
+      "glue:StartJobRun",
+    ]
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
+    sid = "AllowAthenaAccess"
+    effect = "Allow"
+    actions = [
+      "athena:StartQueryExecution",
+      "athena:GetQueryExecution",
+    ]
+    resources = [
+      "*"
+    ]
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "glue_launcher_iam_policy_attachment" {
+  role       = aws_iam_role.glue_launcher_lambda_role.name
+  policy_arn = aws_iam_policy.glue_launcher_lambda.arn
+}
+
+resource "aws_iam_policy" "glue_launcher_lambda" {
+  name        = "GlueLauncherLambdaIAM"
+  description = "Allow Glue Launcher Lambda to view Batch Jobs and kick off Glue jobs"
+  policy      = data.aws_iam_policy_document.glue_launcher_lambda.json
+  tags = {
+    Name = "glue_launcher_lambda"
+  }
+}
