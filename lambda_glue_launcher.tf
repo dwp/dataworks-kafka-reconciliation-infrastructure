@@ -9,8 +9,8 @@ variable "glue_launcher_zip" {
 
 locals {
   manifest_bucket_id     = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket.id
-  manifest_import_type   = "historic"
-  manifest_snapshot_type = "full"
+  manifest_import_type   = "streaming_main"
+  manifest_snapshot_type = "incremental"
   manifest_data_name     = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.database_name
 
   manifest_s3_input_parquet_location = data.terraform_remote_state.aws-internal-compute.outputs.manifest_s3_prefixes.parquet
