@@ -8,20 +8,20 @@ variable "glue_launcher_zip" {
 }
 
 locals {
-  manifest_bucket_id = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket.id
-  manifest_import_type = "historic"
+  manifest_bucket_id     = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket.id
+  manifest_import_type   = "historic"
   manifest_snapshot_type = "full"
-  manifest_data_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.database_name
+  manifest_data_name     = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.database_name
 
   manifest_s3_input_parquet_location = data.terraform_remote_state.aws-internal-compute.outputs.manifest_s3_prefixes.parquet
 
-  manifest_counts_parquet_table_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_counts_parquet
+  manifest_counts_parquet_table_name        = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_counts_parquet
   manifest_mismatched_timestamps_table_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_mismatched_timestamps_parquet
-  missing_imports_parquet_table_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_missing_imports_parquet
-  missing_exports_parquet_table_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_missing_exports_parquet
+  missing_imports_parquet_table_name        = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_missing_imports_parquet
+  missing_exports_parquet_table_name        = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_missing_exports_parquet
 
   manifest_s3_input_parquet_location_base = "s3://${local.manifest_bucket_id}/${local.manifest_s3_input_parquet_location}/${local.manifest_import_type}_${local.manifest_snapshot_type}"
-  manifest_s3_output_location = data.terraform_remote_state.aws-ingestion.outputs.manifest_comparison_parameters.query_output_s3_prefix
+  manifest_s3_output_location             = data.terraform_remote_state.aws-ingestion.outputs.manifest_comparison_parameters.query_output_s3_prefix
 }
 
 resource "aws_lambda_function" "glue_launcher" {
@@ -45,7 +45,7 @@ resource "aws_lambda_function" "glue_launcher" {
       ENVIRONMENT                                              = local.environment
       APPLICATION                                              = "glue_launcher"
       LOG_LEVEL                                                = "INFO"
-      JOB_QUEUE_DEPENDENCIES                                   = "batch_corporate_storage_coalescer_long_running,batch_corporate_storage_coalescer"
+      JOB_QUEUE_DEPENDENCIES                                   = "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.batch_job_queues.batch_corporate_storage_coalescer},${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.batch_job_queues.batch_corporate_storage_coalescer_long_running}"
       ETL_GLUE_JOB_NAME                                        = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined
       MANIFEST_COUNTS_PARQUET_TABLE_NAME                       = "${local.manifest_data_name}.${local.manifest_counts_parquet_table_name}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
       MANIFEST_MISMATCHED_TIMESTAMPS_TABLE_NAME                = "${local.manifest_data_name}.${local.manifest_mismatched_timestamps_table_name}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
@@ -94,7 +94,7 @@ data "aws_iam_policy_document" "glue_launcher_lambda_assume_role" {
 
 data "aws_iam_policy_document" "glue_launcher_lambda" {
   statement {
-    sid = "AllowBatchListJobs"
+    sid    = "AllowBatchListJobs"
     effect = "Allow"
     actions = [
       "batch:ListJobs",
@@ -105,7 +105,7 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
   }
 
   statement {
-    sid = "AllowGlueJobStart"
+    sid    = "AllowGlueJobStart"
     effect = "Allow"
     actions = [
       "glue:StartJobRun",
@@ -116,7 +116,7 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
   }
 
   statement {
-    sid = "AllowAthenaAccess"
+    sid    = "AllowAthenaAccess"
     effect = "Allow"
     actions = [
       "athena:StartQueryExecution",
