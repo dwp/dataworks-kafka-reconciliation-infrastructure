@@ -116,7 +116,7 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
       "glue:StartJobRun",
     ]
     resources = [
-      local.manifest_etl_combined_name
+      "*"
     ]
   }
 
@@ -150,7 +150,7 @@ resource "aws_iam_policy" "glue_launcher_lambda" {
 }
 
 resource "aws_lambda_permission" "batch_coalescer_job_status_change" {
-  statement_id  = "AllowExecutionFromCloudWatch"
+  statement_id  = "AllowExecution_batch_coalescer_job_status_change"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.glue_launcher.function_name
   principal     = "events.amazonaws.com"
@@ -159,7 +159,7 @@ resource "aws_lambda_permission" "batch_coalescer_job_status_change" {
 }
 
 resource "aws_lambda_permission" "batch_coalescer_long_running_job_status_change" {
-  statement_id  = "AllowExecutionFromCloudWatch"
+  statement_id  = "AllowExecution_batch_coalescer_long_running_job_status_change"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.glue_launcher.function_name
   principal     = "events.amazonaws.com"
