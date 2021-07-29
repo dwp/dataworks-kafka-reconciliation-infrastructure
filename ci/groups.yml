@@ -3,6 +3,10 @@ groups:
     jobs:
       - development
       - qa
+      - integration
+      - preprod
+      - production
+
   - name: pull-request
     jobs:
       - dataworks-kafka-reconciliation-infrastructure-pr
