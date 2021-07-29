@@ -25,6 +25,6 @@ locals {
 
   manifest_etl_combined_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined
 
-  batch_corporate_storage_coalescer_name              = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.batch_job_queues.batch_corporate_storage_coalescer.name
-  batch_corporate_storage_coalescer_long_running_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.batch_job_queues.batch_corporate_storage_coalescer_long_running.name
+  batch_corporate_storage_coalescer              = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.batch_job_queues.batch_corporate_storage_coalescer.arn
+  batch_corporate_storage_coalescer_long_running = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.batch_job_queues.batch_corporate_storage_coalescer_long_running.arn
 }

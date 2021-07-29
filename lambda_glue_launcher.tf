@@ -19,7 +19,7 @@ resource "aws_lambda_function" "glue_launcher" {
       ENVIRONMENT                                              = local.environment
       APPLICATION                                              = "glue_launcher"
       LOG_LEVEL                                                = "INFO"
-      JOB_QUEUE_DEPENDENCIES_ARN_LIST                          = "${local.batch_corporate_storage_coalescer_name},${local.batch_corporate_storage_coalescer_long_running_name}"
+      JOB_QUEUE_DEPENDENCIES_ARN_LIST                          = "${local.batch_corporate_storage_coalescer},${local.batch_corporate_storage_coalescer_long_running}"
       ETL_GLUE_JOB_NAME                                        = local.manifest_etl_combined_name
       MANIFEST_COUNTS_PARQUET_TABLE_NAME                       = "${local.manifest_data_name}.${local.manifest_counts_parquet_table_name}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
       MANIFEST_MISMATCHED_TIMESTAMPS_TABLE_NAME                = "${local.manifest_data_name}.${local.manifest_mismatched_timestamps_table_name}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
