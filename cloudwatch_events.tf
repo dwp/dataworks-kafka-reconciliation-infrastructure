@@ -50,7 +50,6 @@ resource "aws_cloudwatch_event_rule" "batch_coalescer_job_status_change" {
   name          = "batch_coalescer_job_status_change"
   description   = "Check when Kafka reconciliation task starts"
   event_pattern = <<EOF
-
 {
   "source": [
     "aws.batch"
@@ -58,9 +57,11 @@ resource "aws_cloudwatch_event_rule" "batch_coalescer_job_status_change" {
   "detail-type": [
     "Batch Job State Change"
   ],
-  "detail": [
-    "name": "${local.batch_corporate_storage_coalescer_name}"
-  ],
+  "detail": {
+    "name": [
+      "${local.batch_corporate_storage_coalescer_name}"
+    ]
+  }
 }
 EOF
 }
@@ -74,7 +75,6 @@ resource "aws_cloudwatch_event_rule" "batch_coalescer_long_running_job_status_ch
   name          = "batch_coalescer_long_running_job_status_change"
   description   = "Check when Kafka reconciliation task starts"
   event_pattern = <<EOF
-
 {
   "source": [
     "aws.batch"
@@ -82,9 +82,11 @@ resource "aws_cloudwatch_event_rule" "batch_coalescer_long_running_job_status_ch
   "detail-type": [
     "Batch Job State Change"
   ],
-  "detail": [
-    "name": "${local.batch_corporate_storage_coalescer_long_running_name}"
-  ],
+  "detail": {
+    "name": [
+      "${local.batch_corporate_storage_coalescer_long_running_name}"
+    ]
+  }
 }
 EOF
 }
