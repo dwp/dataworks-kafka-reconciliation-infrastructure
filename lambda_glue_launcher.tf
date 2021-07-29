@@ -25,7 +25,7 @@ locals {
 }
 
 resource "aws_lambda_function" "glue_launcher" {
-  filename      = "${var.glue_launcher_zip["base_path"]}/emr-launcher-${var.glue_launcher_zip["version"]}.zip"
+  filename      = "${var.glue_launcher_zip["base_path"]}/glue-launcher-${var.glue_launcher_zip["version"]}.zip"
   function_name = "glue_launcher"
   role          = aws_iam_role.glue_launcher_lambda_role.arn
   handler       = "glue_launcher_lambda.glue_launcher.handler"
@@ -67,7 +67,7 @@ resource "aws_lambda_function" "glue_launcher" {
   }
 
   tags = {
-    Name = "glue_launcher"
+    Name = "glue_launcher"emr-launcher
   }
 }
 
