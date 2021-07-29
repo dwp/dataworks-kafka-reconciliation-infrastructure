@@ -59,7 +59,7 @@ resource "aws_cloudwatch_event_rule" "batch_coalescer_job_status_change" {
   ],
   "detail": {
     "name": [
-      "${local.batch_corporate_storage_coalescer_name}"
+      "pdm_object_tagger"
     ]
   }
 }
