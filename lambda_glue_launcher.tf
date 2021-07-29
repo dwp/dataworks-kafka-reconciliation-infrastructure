@@ -136,6 +136,11 @@ resource "aws_iam_role_policy_attachment" "glue_launcher_iam_policy_attachment" 
   policy_arn = aws_iam_policy.glue_launcher_lambda.arn
 }
 
+resource "aws_iam_role_policy_attachment" "glue_launcher_basic_execution_policy_attachment" {
+  role       = aws_iam_role.glue_launcher_lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
 resource "aws_iam_policy" "glue_launcher_lambda" {
   name        = "GlueLauncherLambdaIAM"
   description = "Allow Glue Launcher Lambda to view Batch Jobs and kick off Glue jobs"
