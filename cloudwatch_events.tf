@@ -2,7 +2,6 @@ resource "aws_cloudwatch_event_rule" "kafka_reconciliation_started" {
   name          = "kafka_reconciliation_started"
   description   = "Check when Kafka reconciliation task starts"
   event_pattern = <<EOF
-
 {
   "source": [
     "aws.glue"
@@ -16,9 +15,6 @@ resource "aws_cloudwatch_event_rule" "kafka_reconciliation_started" {
     ],
     "name": [
       "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
-    ],
-    "stateChangeReason": [
-      "{\"code\":\"RUNNING\",\"message\":\"${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined} has started.\"}"
     ]
   }
 }
