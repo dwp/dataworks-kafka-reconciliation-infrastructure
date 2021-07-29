@@ -31,7 +31,7 @@ resource "aws_lambda_function" "glue_launcher" {
   filename      = "${var.glue_launcher_zip["base_path"]}/glue-launcher-${var.glue_launcher_zip["version"]}.zip"
   function_name = "glue_launcher"
   role          = aws_iam_role.glue_launcher_lambda_role.arn
-  handler       = "glue_launcher_lambda.glue_launcher.handler"
+  handler       = "glue_launcher.handler"
   runtime       = "python3.7"
   source_code_hash = filebase64sha256(
     format(
