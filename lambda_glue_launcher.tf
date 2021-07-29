@@ -137,7 +137,4 @@ resource "aws_iam_policy" "glue_launcher_lambda" {
   name        = "GlueLauncherLambdaIAM"
   description = "Allow Glue Launcher Lambda to view Batch Jobs and kick off Glue jobs"
   policy      = data.aws_iam_policy_document.glue_launcher_lambda.json
-  tags = {
-    Name = "glue_launcher_lambda"
-  }
 }
