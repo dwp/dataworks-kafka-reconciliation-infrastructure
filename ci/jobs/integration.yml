@@ -1,10 +1,14 @@
 jobs:
-  - name: qa
+  - name: integration
     max_in_flight: 1
     plan:
       - get: dataworks-kafka-reconciliation-infrastructure
+        passed:
+          - qa
         trigger: true
       - get: dataworks-aws-glue-launcher-release
+        passed:
+          - qa
         trigger: true
       - .: (( inject meta.plan.terraform-bootstrap ))
       - .: (( inject meta.plan.terraform-apply ))

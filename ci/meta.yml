@@ -47,6 +47,7 @@ meta:
             - -exc
             - |
               cp ../terraform-bootstrap/terraform.tf .
+              export TF_VAR_glue_launcher_zip="{base_path = \"../dataworks-aws-glue-launcher-release\", version = \"$(cat ../dataworks-aws-glue-launcher-release/version)\"}"
               terraform workspace show
               terraform init
               terraform plan -out terraform.plan
@@ -55,6 +56,7 @@ meta:
         inputs:
           - name: dataworks-kafka-reconciliation-infrastructure
           - name: terraform-bootstrap
+          - name: dataworks-aws-glue-launcher-release
     terraform-plan:
       task: terraform-plan
       .: (( inject meta.plan.terraform-common-config ))

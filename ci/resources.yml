@@ -25,4 +25,13 @@ resources:
         - ci/*
         - aviator.yml
     webhook_token: ((dataworks.concourse_github_webhook_token))
-    check_every: 720h 
+    check_every: 720h
+
+  - name: dataworks-aws-glue-launcher-release
+    type: github-release
+    source:
+      owner: dwp
+      repository: dataworks-aws-glue-launcher
+    check_every: 5m
+    webhook_token: ((dataworks.concourse_github_webhook_token))
+
