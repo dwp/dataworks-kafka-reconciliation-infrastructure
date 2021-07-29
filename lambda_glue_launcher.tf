@@ -74,9 +74,6 @@ resource "aws_lambda_function" "glue_launcher" {
 resource "aws_iam_role" "glue_launcher_lambda_role" {
   name               = "glue_launcher_lambda_role"
   assume_role_policy = data.aws_iam_policy_document.glue_launcher_lambda_assume_role.json
-  tags = {
-    Name = "glue_launcher_lambda_role"
-  }
 }
 
 data "aws_iam_policy_document" "glue_launcher_lambda_assume_role" {
