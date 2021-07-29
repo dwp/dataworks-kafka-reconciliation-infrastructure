@@ -72,6 +72,9 @@ resource "aws_lambda_function" "glue_launcher" {
   tags = {
     Name = "glue_launcher"
   }
+
+  depends_on = [
+    aws_cloudwatch_log_group.glue_launcher_lambda]
 }
 
 resource "aws_iam_role" "glue_launcher_lambda_role" {
@@ -137,4 +140,9 @@ resource "aws_iam_policy" "glue_launcher_lambda" {
   name        = "GlueLauncherLambdaIAM"
   description = "Allow Glue Launcher Lambda to view Batch Jobs and kick off Glue jobs"
   policy      = data.aws_iam_policy_document.glue_launcher_lambda.json
+}
+
+resource "aws_cloudwatch_log_group" "glue_launcher_lambda" {
+  name = "/aws/lambda/glue_launcher"
+  retention_in_days = "180"
 }
