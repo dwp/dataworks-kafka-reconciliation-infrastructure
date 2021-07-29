@@ -45,7 +45,7 @@ resource "aws_lambda_function" "glue_launcher" {
   }
 
   depends_on = [
-    aws_cloudwatch_log_group.glue_launcher_lambda]
+  aws_cloudwatch_log_group.glue_launcher_lambda]
 }
 
 resource "aws_iam_role" "glue_launcher_lambda_role" {
@@ -135,6 +135,6 @@ resource "aws_lambda_permission" "batch_coalescer_long_running_job_status_change
 }
 
 resource "aws_cloudwatch_log_group" "glue_launcher_lambda" {
-  name = "/aws/lambda/glue_launcher"
+  name              = "/aws/lambda/glue_launcher"
   retention_in_days = "180"
 }

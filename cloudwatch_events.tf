@@ -67,8 +67,8 @@ EOF
 }
 
 resource "aws_cloudwatch_event_target" "batch_coalescer_job_status_change" {
-  rule      = aws_cloudwatch_event_rule.batch_coalescer_job_status_change.name
-  arn       = aws_lambda_function.glue_launcher.arn
+  rule = aws_cloudwatch_event_rule.batch_coalescer_job_status_change.name
+  arn  = aws_lambda_function.glue_launcher.arn
 }
 
 resource "aws_cloudwatch_event_rule" "batch_coalescer_long_running_job_status_change" {
@@ -92,6 +92,6 @@ EOF
 }
 
 resource "aws_cloudwatch_event_target" "batch_coalescer_long_running_job_status_change" {
-  rule      = aws_cloudwatch_event_rule.batch_coalescer_long_running_job_status_change.name
-  arn       = aws_lambda_function.glue_launcher.arn
+  rule = aws_cloudwatch_event_rule.batch_coalescer_long_running_job_status_change.name
+  arn  = aws_lambda_function.glue_launcher.arn
 }
