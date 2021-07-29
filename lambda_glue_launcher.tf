@@ -23,6 +23,8 @@ locals {
   manifest_s3_input_parquet_location_base = "s3://${local.manifest_bucket_id}/${local.manifest_s3_input_parquet_location}/${local.manifest_import_type}_${local.manifest_snapshot_type}"
   manifest_s3_output_location             = data.terraform_remote_state.aws-ingestion.outputs.manifest_comparison_parameters.query_output_s3_prefix
 
+  manifest_etl_combined_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined
+
   batch_corporate_storage_coalescer_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.batch_job_queues.batch_corporate_storage_coalescer.name
   batch_corporate_storage_coalescer_long_running_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.batch_job_queues.batch_corporate_storage_coalescer_long_running.name
 }
@@ -49,7 +51,7 @@ resource "aws_lambda_function" "glue_launcher" {
       APPLICATION                                              = "glue_launcher"
       LOG_LEVEL                                                = "INFO"
       JOB_QUEUE_DEPENDENCIES_ARN_LIST                          = "${local.batch_corporate_storage_coalescer_name},${local.batch_corporate_storage_coalescer_long_running_name}"
-      ETL_GLUE_JOB_NAME                                        = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined
+      ETL_GLUE_JOB_NAME                                        = local.manifest_etl_combined_name
       MANIFEST_COUNTS_PARQUET_TABLE_NAME                       = "${local.manifest_data_name}.${local.manifest_counts_parquet_table_name}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
       MANIFEST_MISMATCHED_TIMESTAMPS_TABLE_NAME                = "${local.manifest_data_name}.${local.manifest_mismatched_timestamps_table_name}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
       MANIFEST_MISSING_IMPORTS_TABLE_NAME                      = "${local.manifest_data_name}.${local.missing_imports_parquet_table_name}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
@@ -114,7 +116,7 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
       "glue:StartJobRun",
     ]
     resources = [
-      "*"
+      local.manifest_etl_combined_name
     ]
   }
 
@@ -170,7 +172,6 @@ resource "aws_lambda_alias" "glue_launcher_lambda" {
   function_name    = aws_lambda_function.glue_launcher.function_name
   function_version = "$LATEST"
 }
-
 
 resource "aws_cloudwatch_log_group" "glue_launcher_lambda" {
   name = "/aws/lambda/glue_launcher"
