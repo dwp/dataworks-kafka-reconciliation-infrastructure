@@ -147,6 +147,31 @@ resource "aws_iam_policy" "glue_launcher_lambda" {
   policy      = data.aws_iam_policy_document.glue_launcher_lambda.json
 }
 
+resource "aws_lambda_permission" "batch_coalescer_job_status_change" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.glue_launcher.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.batch_coalescer_job_status_change.arn
+  qualifier     = aws_lambda_alias.glue_launcher_lambda.name
+}
+
+resource "aws_lambda_permission" "batch_coalescer_long_running_job_status_change" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.glue_launcher.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.batch_coalescer_long_running_job_status_change.arn
+  qualifier     = aws_lambda_alias.glue_launcher_lambda.name
+}
+
+resource "aws_lambda_alias" "glue_launcher_lambda" {
+  name             = "glue_launcher_lambda"
+  function_name    = aws_lambda_function.glue_launcher.function_name
+  function_version = "$LATEST"
+}
+
+
 resource "aws_cloudwatch_log_group" "glue_launcher_lambda" {
   name = "/aws/lambda/glue_launcher"
   retention_in_days = "180"
