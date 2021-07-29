@@ -30,5 +30,4 @@ locals {
 
   batch_corporate_storage_coalescer_name              = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.batch_job_queues.batch_corporate_storage_coalescer.name
   batch_corporate_storage_coalescer_long_running_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.batch_job_queues.batch_corporate_storage_coalescer_long_running.name
-
 }

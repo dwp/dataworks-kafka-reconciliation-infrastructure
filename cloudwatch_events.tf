@@ -36,14 +36,11 @@ resource "aws_cloudwatch_metric_alarm" "kafka_reconciliation_started" {
   dimensions = {
     RuleName = aws_cloudwatch_event_rule.kafka_reconciliation_started.name
   }
-  tags = merge(
-    local.common_tags,
-    {
+  tags = {
       Name              = "kafka_reconciliation_started",
       notification_type = "Information",
       severity          = "Critical"
-    },
-  )
+    }
 }
 
 resource "aws_cloudwatch_event_rule" "batch_coalescer_job_status_change" {
@@ -58,8 +55,8 @@ resource "aws_cloudwatch_event_rule" "batch_coalescer_job_status_change" {
     "Batch Job State Change"
   ],
   "detail": {
-    "name": [
-      "pdm_object_tagger"
+    "jobQueue": [
+      "${local.batch_corporate_storage_coalescer}"
     ]
   }
 }
@@ -83,8 +80,8 @@ resource "aws_cloudwatch_event_rule" "batch_coalescer_long_running_job_status_ch
     "Batch Job State Change"
   ],
   "detail": {
-    "name": [
-      "${local.batch_corporate_storage_coalescer_long_running_name}"
+    "jobQueue": [
+      "${local.batch_corporate_storage_coalescer_long_running}"
     ]
   }
 }
