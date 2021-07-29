@@ -67,7 +67,7 @@ resource "aws_lambda_function" "glue_launcher" {
   }
 
   tags = {
-    Name = "glue_launcher"emr-launcher
+    Name = "glue_launcher"
   }
 }
 
