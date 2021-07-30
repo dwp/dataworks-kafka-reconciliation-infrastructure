@@ -19,6 +19,14 @@ resource "aws_lambda_function" "athena_reconciliation_launcher" {
       ENVIRONMENT                                              = local.environment
       APPLICATION                                              = "athena_reconciliation_launcher"
       LOG_LEVEL                                                = "INFO"
+      MONITORING_SNS_TOPIC = "X"
+      MONITORING_ERRORS_SEVERITY = ""
+      MONITORING_ERRORS_TYPE = ""
+      SLACK_CHANNEL_OVERRIDE = ""
+      BATCH_JOB_QUEUE = "X"
+      BATCH_JOB_NAME = ""
+      BATCH_JOB_DEFINITION_NAME = ""
+      BATCH_PARAMETERS_JSON = ""
     }
   }
 
