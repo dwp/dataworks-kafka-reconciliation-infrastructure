@@ -4,6 +4,8 @@ jobs:
     plan:
       - get: dataworks-kafka-reconciliation-infrastructure
         trigger: true
+      - get: dataworks-aws-glue-launcher-release
+        trigger: true
       - .: (( inject meta.plan.terraform-bootstrap ))
       - .: (( inject meta.plan.terraform-apply ))
       - .: (( inject meta.plan.terraform-plan ))
