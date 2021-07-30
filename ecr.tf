@@ -1,9 +1,8 @@
 resource "aws_ecr_repository" "kafka_reconciliation" {
   name = "kafka-reconciliation"
-  tags = merge(
-    local.common_tags,
-    { DockerHub : "dwpdigital/kafka-reconciliation" }
-  )
+  tags = {
+    DockerHub : "dwpdigital/kafka-reconciliation"
+  }
 }
 
 resource "aws_ecr_repository_policy" "kafka-reconciliation" {
