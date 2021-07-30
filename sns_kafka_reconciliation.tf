@@ -34,7 +34,7 @@ data "aws_iam_policy_document" "kafka_reconciliation_topic_policy" {
       variable = "AWS:SourceOwner"
 
       values = [
-        local.accounts[local.environment],
+        local.account[local.environment],
       ]
     }
 

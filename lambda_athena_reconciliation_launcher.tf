@@ -91,7 +91,7 @@ data "aws_iam_policy_document" "athena_reconciliation_launcher_lambda" {
   statement {
     sid       = "AllowLogging"
     effect    = "Allow"
-    actions   = "logs:PutLogEvents"
+    actions   = ["logs:PutLogEvents"]
     resources = ["*"]
   }
 }
