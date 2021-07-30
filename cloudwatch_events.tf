@@ -13,9 +13,7 @@ resource "aws_cloudwatch_event_rule" "kafka_reconciliation_started" {
     "state": [
       "STARTING"
     ],
-    "name": [
-      "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
-    ]
+    "name": "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
   }
 }
 EOF
@@ -93,7 +91,6 @@ resource "aws_cloudwatch_event_target" "batch_coalescer_long_running_job_status_
   arn  = aws_lambda_function.glue_launcher.arn
 }
 
-// TODO Workout how to specify success status filter and also provide manifest glue job name
 resource "aws_cloudwatch_event_rule" "manifest_glue_job_completed" {
   name        = "manifest_glue_job_completed"
   description = "Events when manifest glue job is completed"
@@ -106,6 +103,12 @@ resource "aws_cloudwatch_event_rule" "manifest_glue_job_completed" {
   "detail-type": [
     "Glue Job State Change"
   ]
+  "detail: {
+    "state": [
+      "SUCCEEDED"
+    ]
+    "name": "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
+  }
 }
 EOF
 
