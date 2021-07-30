@@ -17,3 +17,15 @@ variable "glue_launcher_zip" {
     version   = ""
   }
 }
+
+variable "ecs_hardened_ami_id" {
+  description = "The AMI ID of the latest/pinned Hardened AMI AL2 Image"
+  type        = string
+}
+
+variable "image_version" {
+  description = "Container tag values."
+  default = {
+    kafka-reconciliation = "0.0.40"
+  }
+}

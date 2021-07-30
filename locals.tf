@@ -30,4 +30,16 @@ locals {
 
   batch_corporate_storage_coalescer_name              = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.batch_job_queues.batch_corporate_storage_coalescer.name
   batch_corporate_storage_coalescer_long_running_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.batch_job_queues.batch_corporate_storage_coalescer_long_running.name
+
+  ingest_subnets                            = data.terraform_remote_state.aws-ingestion.outputs.ingestion_subnets
+  ingest_vpc_prefix_list_ids_s3             = data.terraform_remote_state.aws-ingestion.outputs.vpc.vpc.prefix_list_ids.s3
+  ingest_vpc_ecr_dkr_domain_name            = data.terraform_remote_state.aws-ingestion.outputs.vpc.vpc.ecr_dkr_domain_name
+
+  manifest_comparison_compute_environment_max_cpus = {
+    development = 24
+    qa          = 24
+    integration = 24
+    preprod     = 24
+    production  = 650
+  }
 }
