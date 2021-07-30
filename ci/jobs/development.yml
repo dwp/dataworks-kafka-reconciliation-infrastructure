@@ -3,6 +3,9 @@ jobs:
     max_in_flight: 1
     plan:
       - get: dataworks-kafka-reconciliation-infrastructure
+        resource: dataworks-kafka-reconciliation-infrastructure-branch
+        trigger: true
+      - get: dataworks-aws-glue-launcher-release
         trigger: true
       - .: (( inject meta.plan.terraform-bootstrap ))
       - .: (( inject meta.plan.terraform-apply ))
