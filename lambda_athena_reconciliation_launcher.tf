@@ -2,7 +2,7 @@ resource "aws_lambda_function" "athena_reconciliation_launcher" {
   filename      = "${var.athena_reconciliation_launcher_zip["base_path"]}/glue-launcher-${var.athena_reconciliation_launcher_zip["version"]}.zip"
   function_name = "athena_reconciliation_launcher"
   role          = aws_iam_role.athena_reconciliation_launcher_lambda_role.arn
-  handler       = "athena_reconciliation_launcher.handler"
+  handler       = "batch_job_launcher.handler"
   runtime       = "python3.7"
   source_code_hash = filebase64sha256(
     format(
@@ -37,7 +37,7 @@ resource "aws_iam_role" "athena_reconciliation_launcher_lambda_role" {
 
 data "aws_iam_policy_document" "athena_reconciliation_launcher_lambda_assume_role" {
   statement {
-    sid     = "GlueLauncherLambdaAssumeRolePolicy"
+    sid     = "AthenaReconciliationLambdaAssumeRolePolicy"
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
 
@@ -50,10 +50,10 @@ data "aws_iam_policy_document" "athena_reconciliation_launcher_lambda_assume_rol
 
 data "aws_iam_policy_document" "athena_reconciliation_launcher_lambda" {
   statement {
-    sid    = "AllowBatchListJobs"
+    sid    = "AllowBatchSubmitJobs"
     effect = "Allow"
     actions = [
-      "batch:ListJobs",
+      "batch:SubmitJob",
     ]
     resources = [
       "*"
@@ -64,19 +64,7 @@ data "aws_iam_policy_document" "athena_reconciliation_launcher_lambda" {
     sid    = "AllowGlueJobStart"
     effect = "Allow"
     actions = [
-      "glue:StartJobRun",
-    ]
-    resources = [
-      "*"
-    ]
-  }
-
-  statement {
-    sid    = "AllowAthenaAccess"
-    effect = "Allow"
-    actions = [
-      "athena:StartQueryExecution",
-      "athena:GetQueryExecution",
+      "sns:Publish",
     ]
     resources = [
       "*"
@@ -95,25 +83,23 @@ resource "aws_iam_role_policy_attachment" "athena_reconciliation_launcher_basic_
 }
 
 resource "aws_iam_policy" "athena_reconciliation_launcher_lambda" {
-  name        = "GlueLauncherLambdaIAM"
-  description = "Allow Glue Launcher Lambda to view Batch Jobs and kick off Glue jobs"
+  name        = "AthenaReconciliationLambdaIAM"
+  description = "Allow Athena Reconciliation Lambda access to interact with Batch & SNS"
   policy      = data.aws_iam_policy_document.athena_reconciliation_launcher_lambda.json
 }
 
-resource "aws_lambda_permission" "batch_coalescer_job_status_change" {
-  statement_id  = "AllowExecution_batch_coalescer_job_status_change"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.athena_reconciliation_launcher.function_name
-  principal     = "events.amazonaws.com"
-  source_arn    = aws_cloudwatch_event_rule.batch_coalescer_job_status_change.arn
+resource "aws_sns_topic_subscription" "kafka_reconciliation_topic" {
+  topic_arn = aws_sns_topic.kafka_reconciliation_topic.arn
+  protocol  = "lambda"
+  endpoint  = aws_lambda_function.athena_reconciliation_launcher.arn
 }
 
-resource "aws_lambda_permission" "batch_coalescer_long_running_job_status_change" {
-  statement_id  = "AllowExecution_batch_coalescer_long_running_job_status_change"
+resource "aws_lambda_permission" "kafka_reconciliation_topic" {
+  statement_id  = "BatchJobAllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.athena_reconciliation_launcher.function_name
-  principal     = "events.amazonaws.com"
-  source_arn    = aws_cloudwatch_event_rule.batch_coalescer_long_running_job_status_change.arn
+  principal     = "sns.amazonaws.com"
+  source_arn    = aws_sns_topic.kafka_reconciliation_topic.arn
 }
 
 resource "aws_cloudwatch_log_group" "athena_reconciliation_launcher_lambda" {
