@@ -5,8 +5,7 @@ jobs:
         trigger: true
         version: every
       - get: dataworks-aws-glue-launcher-release
-        passed:
-          - qa
+      - get: dataworks-athena-reconciliation-launcher-release
       - put: dataworks-kafka-reconciliation-infrastructure-pr
         params:
           path: dataworks-kafka-reconciliation-infrastructure-pr
