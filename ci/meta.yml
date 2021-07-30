@@ -48,6 +48,7 @@ meta:
             - |
               cp ../terraform-bootstrap/terraform.tf .
               export TF_VAR_glue_launcher_zip="{base_path = \"../dataworks-aws-glue-launcher-release\", version = \"$(cat ../dataworks-aws-glue-launcher-release/version)\"}"
+              export TF_VAR_athena_reconciliation_launcher_zip="{base_path = \"../dataworks-athena-reconciliation-launcher-release\", version = \"$(cat ../dataworks-athena-reconciliation-launcher-release/version)\"}"
               terraform workspace show
               terraform init
               terraform plan -out terraform.plan
@@ -68,6 +69,7 @@ meta:
             - |
               cp ../terraform-bootstrap/terraform.tf .
               export TF_VAR_glue_launcher_zip="{base_path = \"../dataworks-aws-glue-launcher-release\", version = \"$(cat ../dataworks-aws-glue-launcher-release/version)\"}"
+              export TF_VAR_athena_reconciliation_launcher_zip="{base_path = \"../dataworks-athena-reconciliation-launcher-release\", version = \"$(cat ../dataworks-athena-reconciliation-launcher-release/version)\"}"
               terraform workspace show
               terraform init
               terraform plan $DETAILED_EXITCODE
