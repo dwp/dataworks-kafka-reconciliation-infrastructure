@@ -6,7 +6,7 @@ resource "aws_lambda_function" "athena_reconciliation_launcher" {
   runtime       = "python3.7"
   source_code_hash = filebase64sha256(
     format(
-      "%s/glue-launcher-%s.zip",
+      "%s/athena-reconciliation-launcher-%s.zip",
       var.athena_reconciliation_launcher_zip["base_path"],
       var.athena_reconciliation_launcher_zip["version"]
     )

@@ -102,11 +102,11 @@ resource "aws_cloudwatch_event_rule" "manifest_glue_job_completed" {
   ],
   "detail-type": [
     "Glue Job State Change"
-  ]
-  "detail: {
+  ],
+  "detail": {
     "state": [
       "SUCCEEDED"
-    ]
+    ],
     "name": "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
   }
 }
