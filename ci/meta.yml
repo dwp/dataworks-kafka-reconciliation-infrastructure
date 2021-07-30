@@ -58,6 +58,8 @@ meta:
           - name: dataworks-kafka-reconciliation-infrastructure
           - name: terraform-bootstrap
           - name: dataworks-aws-glue-launcher-release
+          - name: dataworks-athena-reconciliation-launcher-release
+
     terraform-plan:
       task: terraform-plan
       .: (( inject meta.plan.terraform-common-config ))
@@ -69,6 +71,7 @@ meta:
             - |
               cp ../terraform-bootstrap/terraform.tf .
               export TF_VAR_glue_launcher_zip="{base_path = \"../dataworks-aws-glue-launcher-release\", version = \"$(cat ../dataworks-aws-glue-launcher-release/version)\"}"
+              echo $(cat ../dataworks-athena-reconciliation-launcher-release/version)
               export TF_VAR_athena_reconciliation_launcher_zip="{base_path = \"../dataworks-athena-reconciliation-launcher-release\", version = \"$(cat ../dataworks-athena-reconciliation-launcher-release/version)\"}"
               terraform workspace show
               terraform init
@@ -78,6 +81,7 @@ meta:
           - name: dataworks-kafka-reconciliation-infrastructure
           - name: terraform-bootstrap
           - name: dataworks-aws-glue-launcher-release
+          - name: dataworks-athena-reconciliation-launcher-release
 
       params:
         DETAILED_EXITCODE: -detailed-exitcode
