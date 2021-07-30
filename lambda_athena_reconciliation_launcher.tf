@@ -1,5 +1,5 @@
 resource "aws_lambda_function" "athena_reconciliation_launcher" {
-  filename      = "${var.athena_reconciliation_launcher_zip["base_path"]}/glue-launcher-${var.athena_reconciliation_launcher_zip["version"]}.zip"
+  filename      = "${var.athena_reconciliation_launcher_zip["base_path"]}/athena-reconciliation-launcher-${var.athena_reconciliation_launcher_zip["version"]}.zip"
   function_name = "athena_reconciliation_launcher"
   role          = aws_iam_role.athena_reconciliation_launcher_lambda_role.arn
   handler       = "batch_job_launcher.handler"
