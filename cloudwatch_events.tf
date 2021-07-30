@@ -13,7 +13,9 @@ resource "aws_cloudwatch_event_rule" "kafka_reconciliation_started" {
     "state": [
       "STARTING"
     ],
-    "name": "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
+    "name": [
+      "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
+    ]
   }
 }
 EOF
@@ -107,7 +109,9 @@ resource "aws_cloudwatch_event_rule" "manifest_glue_job_completed" {
     "state": [
       "SUCCEEDED"
     ],
-    "name": "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
+    "name": [
+      "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
+    ]
   }
 }
 EOF
