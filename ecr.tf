@@ -1,8 +1,8 @@
 resource "aws_ecr_repository" "dataworks-batch-job-launcher" {
   name = "dataworks-batch-job-launcher"
   tags = merge(
-  local.common_tags,
-  { DockerHub : "dwpdigital/dataworks-batch-job-launcher" }
+    local.common_tags,
+    { DockerHub : "dwpdigital/dataworks-batch-job-launcher" }
   )
 }
 

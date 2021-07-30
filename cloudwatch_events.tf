@@ -35,10 +35,10 @@ resource "aws_cloudwatch_metric_alarm" "kafka_reconciliation_started" {
     RuleName = aws_cloudwatch_event_rule.kafka_reconciliation_started.name
   }
   tags = {
-      Name              = "kafka_reconciliation_started",
-      notification_type = "Information",
-      severity          = "Critical"
-    }
+    Name              = "kafka_reconciliation_started",
+    notification_type = "Information",
+    severity          = "Critical"
+  }
 }
 
 resource "aws_cloudwatch_event_rule" "batch_coalescer_job_status_change" {
