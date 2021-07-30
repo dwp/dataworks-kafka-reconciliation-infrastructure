@@ -17,3 +17,17 @@ variable "glue_launcher_zip" {
     version   = ""
   }
 }
+
+variable "athena_reconciliation_launcher_zip" {
+  type = map(string)
+
+  default = {
+    base_path = ""
+    version   = ""
+  }
+}
+
+variable "costcode" {
+  type    = string
+  default = ""
+}

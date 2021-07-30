@@ -13,9 +13,7 @@ resource "aws_cloudwatch_event_rule" "kafka_reconciliation_started" {
     "state": [
       "STARTING"
     ],
-    "name": [
-      "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
-    ]
+    "name": "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
   }
 }
 EOF
@@ -37,10 +35,10 @@ resource "aws_cloudwatch_metric_alarm" "kafka_reconciliation_started" {
     RuleName = aws_cloudwatch_event_rule.kafka_reconciliation_started.name
   }
   tags = {
-      Name              = "kafka_reconciliation_started",
-      notification_type = "Information",
-      severity          = "Critical"
-    }
+    Name              = "kafka_reconciliation_started",
+    notification_type = "Information",
+    severity          = "Critical"
+  }
 }
 
 resource "aws_cloudwatch_event_rule" "batch_coalescer_job_status_change" {
@@ -91,4 +89,36 @@ EOF
 resource "aws_cloudwatch_event_target" "batch_coalescer_long_running_job_status_change" {
   rule = aws_cloudwatch_event_rule.batch_coalescer_long_running_job_status_change.name
   arn  = aws_lambda_function.glue_launcher.arn
+}
+
+resource "aws_cloudwatch_event_rule" "manifest_glue_job_completed" {
+  name        = "manifest_glue_job_completed"
+  description = "Events when manifest glue job is completed"
+
+  event_pattern = <<EOF
+{
+  "source": [
+    "aws.glue"
+  ],
+  "detail-type": [
+    "Glue Job State Change"
+  ],
+  "detail": {
+    "state": [
+      "SUCCEEDED"
+    ],
+    "name": "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
+  }
+}
+EOF
+
+  tags = {
+    Name = "manifest_glue_job_completed"
+  }
+}
+
+resource "aws_cloudwatch_event_target" "manifest_glue_job_completed" {
+  rule      = aws_cloudwatch_event_rule.manifest_glue_job_completed.name
+  target_id = "SendSNSMessageToHandlerLambda"
+  arn       = aws_sns_topic.kafka_reconciliation_topic.arn
 }
