@@ -70,6 +70,22 @@ data "aws_iam_policy_document" "athena_reconciliation_launcher_lambda" {
       "*"
     ]
   }
+
+  statement {
+    sid     = "PublishToMonitoringSnsTopic"
+    effect  = "Allow"
+    actions = ["SNS:Publish"]
+    resources = [
+      data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn,
+    ]
+  }
+
+  statement {
+    sid       = "AllowLogging"
+    effect    = "Allow"
+    actions   = "logs:PutLogEvents"
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "athena_reconciliation_launcher_iam_policy_attachment" {

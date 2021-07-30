@@ -92,3 +92,30 @@ resource "aws_cloudwatch_event_target" "batch_coalescer_long_running_job_status_
   rule = aws_cloudwatch_event_rule.batch_coalescer_long_running_job_status_change.name
   arn  = aws_lambda_function.glue_launcher.arn
 }
+
+// TODO Workout how to specify success status filter and also provide manifest glue job name
+resource "aws_cloudwatch_event_rule" "manifest_glue_job_completed" {
+  name        = "manifest_glue_job_completed"
+  description = "Events when manifest glue job is completed"
+
+  event_pattern = <<EOF
+{
+  "source": [
+    "aws.glue"
+  ],
+  "detail-type": [
+    "Glue Job State Change"
+  ]
+}
+EOF
+
+  tags = {
+    Name = "manifest_glue_job_completed"
+  }
+}
+
+resource "aws_cloudwatch_event_target" "manifest_glue_job_completed" {
+  rule      = aws_cloudwatch_event_rule.manifest_glue_job_completed.name
+  target_id = "SendSNSMessageToHandlerLambda"
+  arn       = aws_sns_topic.kafka_reconciliation_topic.arn
+}
