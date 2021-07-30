@@ -17,3 +17,8 @@ variable "glue_launcher_zip" {
     version   = ""
   }
 }
+
+variable "costcode" {
+  type    = string
+  default = ""
+}
