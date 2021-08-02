@@ -29,3 +29,16 @@ variable "image_version" {
     kafka-reconciliation = "0.0.40"
   }
 }
+variable "athena_reconciliation_launcher_zip" {
+  type = map(string)
+
+  default = {
+    base_path = ""
+    version   = ""
+  }
+}
+
+variable "costcode" {
+  type    = string
+  default = ""
+}

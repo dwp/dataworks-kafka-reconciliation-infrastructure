@@ -10,6 +10,10 @@ jobs:
         passed:
           - qa
         trigger: true
+      - get: dataworks-athena-reconciliation-launcher-release
+        passed:
+          - qa
+        trigger: true
       - .: (( inject meta.plan.terraform-bootstrap ))
       - .: (( inject meta.plan.terraform-apply ))
         params:

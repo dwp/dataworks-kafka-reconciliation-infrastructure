@@ -35,3 +35,11 @@ resources:
     check_every: 5m
     webhook_token: ((dataworks.concourse_github_webhook_token))
 
+  - name: dataworks-athena-reconciliation-launcher-release
+    type: github-release
+    source:
+      owner: dwp
+      repository: dataworks-athena-reconciliation-launcher
+    check_every: 5m
+    webhook_token: ((dataworks.concourse_github_webhook_token))
+
