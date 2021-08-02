@@ -20,13 +20,13 @@ resource "aws_lambda_function" "athena_reconciliation_launcher" {
       APPLICATION                = "athena_reconciliation_launcher"
       LOG_LEVEL                  = "INFO"
       MONITORING_SNS_TOPIC       = data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.name
-      MONITORING_ERRORS_SEVERITY = ""
-      MONITORING_ERRORS_TYPE     = ""
-      SLACK_CHANNEL_OVERRIDE     = ""
-      BATCH_JOB_QUEUE            = "X"
-      BATCH_JOB_NAME             = "X"
-      BATCH_JOB_DEFINITION_NAME  = "X"
-      BATCH_PARAMETERS_JSON      = "X"
+      MONITORING_ERRORS_SEVERITY = "High"
+      MONITORING_ERRORS_TYPE     = "Warning"
+      SLACK_CHANNEL_OVERRIDE     = "dataworks-critical-errors"
+      BATCH_JOB_NAME             = local.kafka_reconciliation_application_name
+      BATCH_JOB_QUEUE            = aws_batch_job_queue.kafka_reconciliation.name
+      BATCH_JOB_DEFINITION_NAME  = aws_batch_job_definition.kafka_reconciliation.name
+      BATCH_PARAMETERS_JSON      = ""
     }
   }
 
