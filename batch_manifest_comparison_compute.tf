@@ -1,7 +1,7 @@
 # AWS Batch Instance IAM role & profile
 
-resource "aws_batch_compute_environment" "manifest_comparison" {
-  compute_environment_name_prefix = "manifest_comparison_"
+resource "aws_batch_compute_environment" "kafka_reconciliation" {
+  compute_environment_name_prefix = "kafka_reconciliation_"
   service_role                    = data.aws_iam_role.aws_batch_service_role.arn
   type                            = "MANAGED"
 
@@ -13,16 +13,16 @@ resource "aws_batch_compute_environment" "manifest_comparison" {
 
     min_vcpus     = 0
     desired_vcpus = 0
-    max_vcpus     = local.manifest_comparison_compute_environment_max_cpus[local.environment]
+    max_vcpus     = local.kafka_reconciliation_compute_environment_max_cpus[local.environment]
 
-    security_group_ids = [data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.manifest_comparison_batch.id]
+    security_group_ids = [data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.kafka_reconciliation_batch.id]
     subnets            = local.ingest_subnets.id
     type               = "EC2"
 
     tags = merge(
     local.common_tags,
     {
-      Name         = "manifest_comparison",
+      Name         = "kafka_reconciliation",
       Persistence  = "Ignore",
       AutoShutdown = "False",
     }
@@ -98,43 +98,22 @@ resource "aws_iam_role_policy_attachment" "ecs_instance_role_csc_batch_ecr" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
-resource "aws_security_group_rule" "manifest_comparison_batch_to_s3" {
+resource "aws_security_group_rule" "kafka_reconciliation_batch_to_s3" {
   description       = "Manifest Comparison Batch to S3"
   type              = "egress"
   prefix_list_ids   = [local.ingest_vpc_prefix_list_ids_s3]
   protocol          = "tcp"
   from_port         = 443
   to_port           = 443
-  security_group_id = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.manifest_comparison_batch.id
+  security_group_id = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.kafka_reconciliation_batch.id
 }
 
-resource "aws_security_group_rule" "manifest_comparison_batch_to_s3_http" {
+resource "aws_security_group_rule" "kafka_reconciliation_batch_to_s3_http" {
   description       = "Manifest Comparison Batch to S3"
   type              = "egress"
   prefix_list_ids   = [local.ingest_vpc_prefix_list_ids_s3]
   protocol          = "tcp"
   from_port         = 80
   to_port           = 80
-  security_group_id = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.manifest_comparison_batch.id
+  security_group_id = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.kafka_reconciliation_batch.id
 }
-
-// TODO what are these necessary for?
-//resource "aws_security_group_rule" "csc_egress_internet_proxy" {
-//  description              = "Corporate Storage Coalescer to Internet Proxy (for ACM-PCA)"
-//  type                     = "egress"
-//  source_security_group_id = data.terraform_remote_state.aws-ingestion.outputs.internet_proxy.sg
-//  protocol                 = "tcp"
-//  from_port                = 3128
-//  to_port                  = 3128
-//  security_group_id        = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.corporate_storage_coalescer_batch.id
-//}
-//
-//resource "aws_security_group_rule" "csc_ingress_internet_proxy" {
-//  description              = "Allow proxy access from Corporate Storage Coalescer"
-//  type                     = "ingress"
-//  from_port                = 3128
-//  to_port                  = 3128
-//  protocol                 = "tcp"
-//  source_security_group_id = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.corporate_storage_coalescer_batch.id
-//  security_group_id        = data.terraform_remote_state.aws-ingestion.outputs.internet_proxy.sg
-//}
