@@ -18,6 +18,16 @@ resource "aws_batch_job_definition" "kafka_reconciliation" {
   container_properties = <<CONTAINER_PROPERTIES
   {
       "command": [
+            "-i", "Ref::manifest_missing_imports_table_name",
+            "-e", "Ref::manifest_missing_exports_table_name",
+            "-c", "Ref::manifest_counts_table_name",
+            "-t", "Ref::manifest_mismatched_timestamps_table_name",
+            "-r", "Ref::manifest_report_count_of_ids",
+            "-dc", "Ref::mdistinct_default_database_collection_list_full",
+            "-dl", "Ref::distinct_default_database_list_full",
+            "-qo", "Ref::manifest_s3_output_location_queries",
+            "-o", "Ref::manifest_s3_output_prefix_results",
+            "-b", "Ref::manifest_s3_bucket",
             "-m"
           ],
       "image": "${local.kafka_reconciliation_image}",
