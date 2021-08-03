@@ -9,7 +9,7 @@ locals {
   }
 
   manifest_bucket_id     = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket.id
-  manifest_bucket_arn     = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket.arn
+  manifest_bucket_arn    = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket.arn
   manifest_bucket_cmk    = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket_cmk.arn
   manifest_import_type   = "streaming_main"
   manifest_snapshot_type = "incremental"
@@ -33,9 +33,9 @@ locals {
   batch_corporate_storage_coalescer_name              = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.batch_job_queues.batch_corporate_storage_coalescer.name
   batch_corporate_storage_coalescer_long_running_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.batch_job_queues.batch_corporate_storage_coalescer_long_running.name
 
-  ingest_subnets                            = data.terraform_remote_state.aws-ingestion.outputs.ingestion_subnets
-  ingest_vpc_prefix_list_ids_s3             = data.terraform_remote_state.aws-ingestion.outputs.vpc.vpc.prefix_list_ids.s3
-  ingest_vpc_ecr_dkr_domain_name            = data.terraform_remote_state.aws-ingestion.outputs.vpc.vpc.ecr_dkr_domain_name
+  ingest_subnets                 = data.terraform_remote_state.aws-ingestion.outputs.ingestion_subnets
+  ingest_vpc_prefix_list_ids_s3  = data.terraform_remote_state.aws-ingestion.outputs.vpc.vpc.prefix_list_ids.s3
+  ingest_vpc_ecr_dkr_domain_name = data.terraform_remote_state.aws-ingestion.outputs.vpc.vpc.ecr_dkr_domain_name
 
   kafka_reconciliation_compute_environment_max_cpus = {
     development = 24

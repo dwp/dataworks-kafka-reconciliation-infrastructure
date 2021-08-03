@@ -20,12 +20,12 @@ resource "aws_batch_compute_environment" "kafka_reconciliation" {
     type               = "EC2"
 
     tags = merge(
-    local.common_tags,
-    {
-      Name         = "kafka_reconciliation",
-      Persistence  = "Ignore",
-      AutoShutdown = "False",
-    }
+      local.common_tags,
+      {
+        Name         = "kafka_reconciliation",
+        Persistence  = "Ignore",
+        AutoShutdown = "False",
+      }
     )
   }
 

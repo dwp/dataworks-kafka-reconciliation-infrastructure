@@ -26,7 +26,10 @@ resource "aws_lambda_function" "athena_reconciliation_launcher" {
       BATCH_JOB_NAME             = local.kafka_reconciliation_application_name
       BATCH_JOB_QUEUE            = aws_batch_job_queue.kafka_reconciliation.name
       BATCH_JOB_DEFINITION_NAME  = aws_batch_job_definition.kafka_reconciliation.name
-      BATCH_PARAMETERS_JSON      = ""
+      BATCH_PARAMETERS_JSON = jsonencode({
+        "manifest_prefix" : local.manifest_s3_output_location,
+        "manifest_s3_bucket" : local.manifest_bucket_id
+      })
     }
   }
 
