@@ -23,10 +23,7 @@ resource "aws_batch_job_definition" "kafka_reconciliation" {
             "-c", "Ref::manifest_counts_table_name",
             "-t", "Ref::manifest_mismatched_timestamps_table_name",
             "-r", "Ref::manifest_report_count_of_ids",
-            "-dc", "Ref::mdistinct_default_database_collection_list_full",
-            "-dl", "Ref::distinct_default_database_list_full",
-            "-qo", "Ref::manifest_s3_output_location_queries",
-            "-o", "Ref::manifest_s3_output_prefix_results",
+            "-p", "Ref::manifest_prefix",
             "-b", "Ref::manifest_s3_bucket",
             "-m"
           ],
@@ -38,10 +35,7 @@ resource "aws_batch_job_definition" "kafka_reconciliation" {
           {"name": "LOG_LEVEL", "value": "INFO"},
           {"name": "AWS_DEFAULT_REGION", "value": "eu-west-2"},
           {"name": "ENVIRONMENT", "value": "${local.environment}"},
-          {"name": "APPLICATION", "value": "${local.kafka_reconciliation_application_name}"},
-          {"name": "manifest_s3_bucket", "value": "${local.manifest_bucket_id}",
-          {"name": "manifest_s3_output_prefix_results", "value": "{}",
-          {"name": "manifest_s3_output_location_queries", "value": "{}",
+          {"name": "APPLICATION", "value": "${local.kafka_reconciliation_application_name}"}
       ],
       "ulimits": [
         {
