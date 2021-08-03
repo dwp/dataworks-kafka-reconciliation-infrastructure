@@ -24,8 +24,7 @@ resource "aws_batch_job_definition" "kafka_reconciliation" {
             "-t", "Ref::manifest_mismatched_timestamps_table_name",
             "-r", "Ref::manifest_report_count_of_ids",
             "-p", "Ref::manifest_prefix",
-            "-b", "Ref::manifest_s3_bucket",
-            "-m"
+            "-b", "Ref::manifest_s3_bucket"
           ],
       "image": "${local.kafka_reconciliation_image}",
       "jobRoleArn" : "${aws_iam_role.kafka_reconciliation_batch.arn}",
