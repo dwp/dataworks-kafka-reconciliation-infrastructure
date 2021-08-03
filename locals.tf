@@ -22,6 +22,8 @@ locals {
   missing_imports_parquet_table_name        = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_missing_imports_parquet
   missing_exports_parquet_table_name        = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_missing_exports_parquet
 
+  manifest_report_count_of_ids = "10"
+
   manifest_s3_input_parquet_location_base = "s3://${local.manifest_bucket_id}/${local.manifest_s3_input_parquet_location}/${local.manifest_import_type}_${local.manifest_snapshot_type}"
   manifest_s3_output_location             = data.terraform_remote_state.aws-ingestion.outputs.manifest_comparison_parameters.query_output_s3_prefix
 
