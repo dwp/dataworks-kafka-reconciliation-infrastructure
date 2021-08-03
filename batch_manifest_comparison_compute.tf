@@ -7,7 +7,7 @@ resource "aws_batch_compute_environment" "kafka_reconciliation" {
 
   compute_resources {
     image_id            = var.ecs_hardened_ami_id
-    instance_role       = aws_iam_instance_profile.ecs_instance_role_csc_batch.arn
+    instance_role       = aws_iam_instance_profile.ecs_instance_role_kafka_reconciliation_batch.arn
     instance_type       = ["optimal"]
     allocation_strategy = "BEST_FIT_PROGRESSIVE"
 
@@ -35,8 +35,8 @@ resource "aws_batch_compute_environment" "kafka_reconciliation" {
   }
 }
 
-resource "aws_iam_role" "ecs_instance_role_csc_batch" {
-  name = "ecs_instance_role_csc_batch"
+resource "aws_iam_role" "ecs_instance_role_kafka_reconciliation_batch" {
+  name = "ecs_instance_role_kafka_reconciliation_batch"
 
   assume_role_policy = <<EOF
 {
@@ -54,18 +54,18 @@ resource "aws_iam_role" "ecs_instance_role_csc_batch" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_instance_role_csc_batch" {
-  role       = aws_iam_role.ecs_instance_role_csc_batch.name
+resource "aws_iam_role_policy_attachment" "ecs_instance_role_kafka_reconciliation_batch" {
+  role       = aws_iam_role.ecs_instance_role_kafka_reconciliation_batch.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
-resource "aws_iam_instance_profile" "ecs_instance_role_csc_batch" {
-  name = "ecs_instance_role_csc_profile"
-  role = aws_iam_role.ecs_instance_role_csc_batch.name
+resource "aws_iam_instance_profile" "ecs_instance_role_kafka_reconciliation_batch" {
+  name = "ecs_instance_role_kafka_reconciliation_batch"
+  role = aws_iam_role.ecs_instance_role_kafka_reconciliation_batch.name
 }
 
 # Custom policy to allow use of default EBS encryption key by Batch instance role
-data "aws_iam_policy_document" "ecs_instance_role_csc_batch_ebs_cmk" {
+data "aws_iam_policy_document" "ecs_instance_role_kafka_reconciliation_batch_ebs_cmk" {
 
   statement {
     sid    = "AllowUseDefaultEbsCmk"
@@ -83,18 +83,18 @@ data "aws_iam_policy_document" "ecs_instance_role_csc_batch_ebs_cmk" {
   }
 }
 
-resource "aws_iam_policy" "ecs_instance_role_csc_batch_ebs_cmk" {
-  name   = "ecs_instance_role_csc_batch_ebs_cmk"
-  policy = data.aws_iam_policy_document.ecs_instance_role_csc_batch_ebs_cmk.json
+resource "aws_iam_policy" "ecs_instance_role_kafka_reconciliation_batch_ebs_cmk" {
+  name   = "ecs_instance_role_kafka_reconciliation_batch_ebs_cmk"
+  policy = data.aws_iam_policy_document.ecs_instance_role_kafka_reconciliation_batch_ebs_cmk.json
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_instance_role_csc_batch_ebs_cmk" {
-  role       = aws_iam_role.ecs_instance_role_csc_batch.name
-  policy_arn = aws_iam_policy.ecs_instance_role_csc_batch_ebs_cmk.arn
+resource "aws_iam_role_policy_attachment" "ecs_instance_role_kafka_reconciliation_batch_ebs_cmk" {
+  role       = aws_iam_role.ecs_instance_role_kafka_reconciliation_batch.name
+  policy_arn = aws_iam_policy.ecs_instance_role_kafka_reconciliation_batch_ebs_cmk.arn
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_instance_role_csc_batch_ecr" {
-  role       = aws_iam_role.ecs_instance_role_csc_batch.name
+resource "aws_iam_role_policy_attachment" "ecs_instance_role_kafka_reconciliation_batch_ecr" {
+  role       = aws_iam_role.ecs_instance_role_kafka_reconciliation_batch.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
