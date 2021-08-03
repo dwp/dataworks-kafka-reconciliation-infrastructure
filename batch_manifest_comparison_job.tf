@@ -5,7 +5,7 @@ locals {
 
 resource "aws_batch_job_queue" "kafka_reconciliation" {
   //  TODO: Move compute environment to fargate once Terraform supports it.
-  compute_environments = [aws_batch_compute_environment.manifest_comparison.arn]
+  compute_environments = [aws_batch_compute_environment.kafka_reconciliation.arn]
   name                 = local.kafka_reconciliation_application_name
   priority             = 5
   state                = "ENABLED"
