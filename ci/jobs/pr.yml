@@ -6,6 +6,7 @@ jobs:
         version: every
       - get: dataworks-aws-glue-launcher-release
       - get: dataworks-athena-reconciliation-launcher-release
+      - get: dw-al2-ecs-ami
       - put: dataworks-kafka-reconciliation-infrastructure-pr
         params:
           path: dataworks-kafka-reconciliation-infrastructure-pr
