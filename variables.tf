@@ -26,7 +26,7 @@ variable "ecs_hardened_ami_id" {
 variable "image_version" {
   description = "Container tag values."
   default = {
-    kafka-reconciliation = "0.0.40"
+    kafka-reconciliation = "0.0.1"
   }
 }
 variable "athena_reconciliation_launcher_zip" {
