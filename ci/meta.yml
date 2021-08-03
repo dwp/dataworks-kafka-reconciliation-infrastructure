@@ -49,6 +49,7 @@ meta:
               cp ../terraform-bootstrap/terraform.tf .
               export TF_VAR_glue_launcher_zip="{base_path = \"../dataworks-aws-glue-launcher-release\", version = \"$(cat ../dataworks-aws-glue-launcher-release/version)\"}"
               export TF_VAR_athena_reconciliation_launcher_zip="{base_path = \"../dataworks-athena-reconciliation-launcher-release\", version = \"$(cat ../dataworks-athena-reconciliation-launcher-release/version)\"}"
+              export TF_VAR_ecs_hardened_ami_id=$(cat ../dw-al2-ecs-ami/id)
               terraform workspace show
               terraform init
               terraform plan -out terraform.plan
@@ -59,6 +60,7 @@ meta:
           - name: terraform-bootstrap
           - name: dataworks-aws-glue-launcher-release
           - name: dataworks-athena-reconciliation-launcher-release
+          - name: dw-al2-ecs-ami
 
     terraform-plan:
       task: terraform-plan
@@ -71,8 +73,8 @@ meta:
             - |
               cp ../terraform-bootstrap/terraform.tf .
               export TF_VAR_glue_launcher_zip="{base_path = \"../dataworks-aws-glue-launcher-release\", version = \"$(cat ../dataworks-aws-glue-launcher-release/version)\"}"
-              echo $(cat ../dataworks-athena-reconciliation-launcher-release/version)
               export TF_VAR_athena_reconciliation_launcher_zip="{base_path = \"../dataworks-athena-reconciliation-launcher-release\", version = \"$(cat ../dataworks-athena-reconciliation-launcher-release/version)\"}"
+              export TF_VAR_ecs_hardened_ami_id=$(cat ../dw-al2-ecs-ami/id)
               terraform workspace show
               terraform init
               terraform plan $DETAILED_EXITCODE
@@ -82,6 +84,7 @@ meta:
           - name: terraform-bootstrap
           - name: dataworks-aws-glue-launcher-release
           - name: dataworks-athena-reconciliation-launcher-release
+          - name: dw-al2-ecs-ami
 
       params:
         DETAILED_EXITCODE: -detailed-exitcode
