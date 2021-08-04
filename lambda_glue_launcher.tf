@@ -102,6 +102,7 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
     actions = [
       "athena:StartQueryExecution",
       "athena:GetQueryExecution",
+      "athena:GetQueryResults"
     ]
     resources = [
       "*"
