@@ -26,15 +26,15 @@ resource "aws_lambda_function" "athena_reconciliation_launcher" {
       BATCH_JOB_NAME             = local.kafka_reconciliation_application_name
       BATCH_JOB_QUEUE            = aws_batch_job_queue.kafka_reconciliation.name
       BATCH_JOB_DEFINITION_NAME  = aws_batch_job_definition.kafka_reconciliation.name
-      BATCH_PARAMETERS_JSON = jsonencode([
-        "-i" , local.missing_imports_parquet_table_name,
-        "-e" , local.missing_exports_parquet_table_name,
-        "-c" , local.manifest_counts_parquet_table_name,
-        "-t" , local.manifest_mismatched_timestamps_table_name,
-        "-r" , local.manifest_report_count_of_ids,
-        "-p" , local.manifest_s3_output_location,
-        "-b" , local.manifest_bucket_id
-      ])
+      BATCH_PARAMETERS_JSON = jsonencode({
+        "manifest_missing_imports_table_name" : local.missing_imports_parquet_table_name,
+        "manifest_missing_exports_table_name" : local.missing_exports_parquet_table_name,
+        "manifest_counts_table_name" : local.manifest_counts_parquet_table_name,
+        "manifest_mismatched_timestamps_table_name" : local.manifest_mismatched_timestamps_table_name,
+        "manifest_report_count_of_ids" : local.manifest_report_count_of_ids,
+        "manifest_prefix" : local.manifest_s3_output_location,
+        "manifest_s3_bucket" : local.manifest_bucket_id
+      })
     }
   }
 
