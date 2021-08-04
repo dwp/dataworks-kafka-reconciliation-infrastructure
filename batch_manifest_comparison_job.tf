@@ -18,7 +18,6 @@ resource "aws_batch_job_definition" "kafka_reconciliation" {
   container_properties = <<CONTAINER_PROPERTIES
   {
       "command": [
-            "python main.py",
             "-i", "Ref::manifest_missing_imports_table_name",
             "-e", "Ref::manifest_missing_exports_table_name",
             "-c", "Ref::manifest_counts_table_name",
