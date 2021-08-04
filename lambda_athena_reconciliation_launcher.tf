@@ -19,7 +19,7 @@ resource "aws_lambda_function" "athena_reconciliation_launcher" {
       ENVIRONMENT                = local.environment
       APPLICATION                = "athena_reconciliation_launcher"
       LOG_LEVEL                  = "INFO"
-      MONITORING_SNS_TOPIC       = data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.name
+      MONITORING_SNS_TOPIC       = data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn
       MONITORING_ERRORS_SEVERITY = "High"
       MONITORING_ERRORS_TYPE     = "Warning"
       SLACK_CHANNEL_OVERRIDE     = "dataworks-critical-errors"
