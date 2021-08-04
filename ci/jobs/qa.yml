@@ -8,6 +8,8 @@ jobs:
         trigger: true
       - get: dataworks-athena-reconciliation-launcher-release
         trigger: true
+      - get: dw-al2-ecs-ami
+        trigger: true
 
       - .: (( inject meta.plan.terraform-bootstrap ))
       - .: (( inject meta.plan.terraform-apply ))

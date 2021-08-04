@@ -14,6 +14,10 @@ jobs:
         passed:
           - qa
         trigger: true
+      - get: dw-al2-ecs-ami
+        passed:
+          - qa
+        trigger: true
       - .: (( inject meta.plan.terraform-bootstrap ))
       - .: (( inject meta.plan.terraform-apply ))
         params:
