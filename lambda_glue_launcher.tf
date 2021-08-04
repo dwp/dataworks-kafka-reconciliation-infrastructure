@@ -83,6 +83,8 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
     effect = "Allow"
     actions = [
       "glue:StartJobRun",
+      "glue:GetTable",
+      "glue:GetDatabase",
     ]
     resources = [
       "*"
