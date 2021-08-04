@@ -119,6 +119,23 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
       "${local.manifest_bucket_arn}/*"
     ]
   }
+
+  statement {
+    sid    = "AllowInteractWithS3Objects"
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+      "kms:DescribeKey",
+      "kms:Encrypt",
+      "kms:GenerateDataKey*",
+      "kms:ReEncrypt*",
+    ]
+
+    resources = [
+      local.manifest_bucket_cmk,
+    ]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "glue_launcher_iam_policy_attachment" {
