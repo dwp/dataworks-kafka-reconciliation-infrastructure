@@ -51,7 +51,6 @@ resource "aws_batch_job_definition" "kafka_reconciliation" {
 resource "aws_iam_role" "kafka_reconciliation_batch" {
   name               = "kafka_reconciliation"
   assume_role_policy = data.aws_iam_policy_document.batch_assume_policy.json
-  tags               = local.common_tags
 }
 
 data "aws_iam_policy_document" "kafka_reconciliation_s3" {

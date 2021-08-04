@@ -19,14 +19,11 @@ resource "aws_batch_compute_environment" "kafka_reconciliation" {
     subnets            = local.ingest_subnets.id
     type               = "EC2"
 
-    tags = merge(
-    local.common_tags,
-    {
-      Name         = "kafka_reconciliation",
-      Persistence  = "Ignore",
-      AutoShutdown = "False",
-    }
-    )
+    tags = {
+        Name         = "kafka_reconciliation",
+        Persistence  = "Ignore",
+        AutoShutdown = "False",
+      }
   }
 
   lifecycle {
