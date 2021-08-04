@@ -16,6 +16,7 @@ locals {
   manifest_data_name     = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.database_name
 
   manifest_s3_input_parquet_location = data.terraform_remote_state.aws-internal-compute.outputs.manifest_s3_prefixes.parquet
+  manifest_s3_output_location        = "s3://${local.manifest_bucket_id}/${local.manifest_s3_output_location_suffix}_${local.manifest_import_type}_${local.manifest_snapshot_type}/templates"
 
   manifest_counts_parquet_table_name        = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_counts_parquet
   manifest_mismatched_timestamps_table_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_mismatched_timestamps_parquet
@@ -25,7 +26,7 @@ locals {
   manifest_report_count_of_ids = "10"
 
   manifest_s3_input_parquet_location_base = "s3://${local.manifest_bucket_id}/${local.manifest_s3_input_parquet_location}/${local.manifest_import_type}_${local.manifest_snapshot_type}"
-  manifest_s3_output_location             = data.terraform_remote_state.aws-ingestion.outputs.manifest_comparison_parameters.query_output_s3_prefix
+  manifest_s3_output_location_suffix      = data.terraform_remote_state.aws-ingestion.outputs.manifest_comparison_parameters.query_output_s3_prefix
 
   manifest_etl_combined_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined
 
