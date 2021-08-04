@@ -102,7 +102,7 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
   }
 
   statement {
-    sid = "AllowS3AccessForAthena"
+    sid    = "AllowS3AccessForAthena"
     effect = "Allow"
     actions = [
       "s3:GetBucketLocation",
@@ -114,7 +114,7 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
       "s3:PutObject"
     ]
 
-    resource = [
+    resources = [
       local.manifest_bucket_arn,
       "${local.manifest_bucket_arn}/*"
     ]
