@@ -27,8 +27,8 @@ resource "aws_lambda_function" "glue_launcher" {
       MANIFEST_MISSING_EXPORTS_TABLE_NAME                      = "${local.manifest_data_name}.${local.missing_exports_parquet_table_name}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
       MANIFEST_S3_INPUT_LOCATION_IMPORT                        = data.terraform_remote_state.aws-internal-compute.outputs.manifest_comparison_parameters.historic_folder
       MANIFEST_S3_INPUT_LOCATION_EXPORT                        = data.terraform_remote_state.aws-ingestion.outputs.manifest_comparison_parameters.query_output_s3_prefix
-      MANIFEST_COMPARISON_CUT_OFF_DATE_START                   = "PREVIOUS_DAY_MIDNIGHT" # Set an 'YYYY-MM-DD HH:MM:SS.MMM' to define. Else lambda will calculate date if empty or set to "PREVIOUS_DAY_MIDNIGHT"
-      MANIFEST_COMPARISON_CUT_OFF_DATE_END                     = "TODAY_MIDNIGHT"        # Set an 'YYYY-MM-DD HH:MM:SS.MMM' to define. Else lambda will calculate date if empty or set to "TODAY_MIDNIGHT"
+      MANIFEST_COMPARISON_CUT_OFF_DATE_START                   = "PREVIOUS_DAY_MIDNIGHT" # Set an 'YYYY-MM-DD HH:MM:SS' to define. Else lambda will calculate date if empty or set to "PREVIOUS_DAY_MIDNIGHT"
+      MANIFEST_COMPARISON_CUT_OFF_DATE_END                     = "TODAY_MIDNIGHT"        # Set an 'YYYY-MM-DD HH:MM:SS' to define. Else lambda will calculate date if empty or set to "TODAY_MIDNIGHT"
       MANIFEST_COMPARISON_MARGIN_OF_ERROR_MINUTES              = "2"                     # Lambda defaults to 2 if not set
       MANIFEST_COMPARISON_SNAPSHOT_TYPE                        = local.manifest_snapshot_type
       MANIFEST_COMPARISON_IMPORT_TYPE                          = local.manifest_import_type
@@ -82,6 +82,7 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
     sid    = "AllowGlueJobStart"
     effect = "Allow"
     actions = [
+      "glue:CreateTable",
       "glue:StartJobRun",
       "glue:GetTable*",
       "glue:GetDatabase*",
