@@ -83,13 +83,11 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
     effect = "Allow"
     actions = [
       "glue:StartJobRun",
-      "glue:GetTable",
-      "glue:GetTables",
-      "glue:GetDatabase",
-      "glue:GetPartition",
-      "glue:GetPartitions",
+      "glue:GetTable*",
+      "glue:GetDatabase*",
+      "glue:GetPartition*",
       "glue:DeleteTable",
-      "glue:DeletePartitions",
+      "glue:DeletePartition*",
     ]
     resources = [
       "*"
@@ -102,7 +100,7 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
     actions = [
       "athena:StartQueryExecution",
       "athena:GetQueryExecution",
-      "athena:GetQueryResults"
+      "athena:GetQueryResult*"
     ]
     resources = [
       "*"
