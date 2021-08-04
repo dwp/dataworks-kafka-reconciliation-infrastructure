@@ -83,6 +83,11 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
     effect = "Allow"
     actions = [
       "glue:StartJobRun",
+      "glue:GetTable*",
+      "glue:GetDatabase*",
+      "glue:GetPartition*",
+      "glue:DeleteTable",
+      "glue:DeletePartition*",
     ]
     resources = [
       "*"
@@ -95,6 +100,7 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
     actions = [
       "athena:StartQueryExecution",
       "athena:GetQueryExecution",
+      "athena:GetQueryResult*"
     ]
     resources = [
       "*"
@@ -117,6 +123,23 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
     resources = [
       local.manifest_bucket_arn,
       "${local.manifest_bucket_arn}/*"
+    ]
+  }
+
+  statement {
+    sid    = "AllowInteractWithS3Objects"
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+      "kms:DescribeKey",
+      "kms:Encrypt",
+      "kms:GenerateDataKey*",
+      "kms:ReEncrypt*",
+    ]
+
+    resources = [
+      local.manifest_bucket_cmk,
     ]
   }
 }
