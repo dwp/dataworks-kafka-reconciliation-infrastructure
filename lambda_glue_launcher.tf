@@ -121,12 +121,15 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
   }
 
   statement {
-    sid    = "AllowDecryptConfigBucketObjects"
+    sid    = "AllowInteractWithS3Objects"
     effect = "Allow"
 
     actions = [
       "kms:Decrypt",
       "kms:DescribeKey",
+      "kms:Encrypt",
+      "kms:GenerateDataKey*",
+      "kms:ReEncrypt*",
     ]
 
     resources = [
