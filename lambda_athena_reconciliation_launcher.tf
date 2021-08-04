@@ -34,7 +34,7 @@ resource "aws_lambda_function" "athena_reconciliation_launcher" {
         "-r" : local.manifest_report_count_of_ids,
         "-p" : local.manifest_s3_output_location,
         "-b" : local.manifest_bucket_id
-      }
+      })
     }
   }
 
