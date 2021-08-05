@@ -65,6 +65,7 @@ data "aws_iam_policy_document" "kafka_reconciliation_ecs" {
     ]
 
     resources = [
+      local.manifest_bucket_arn,
       "${local.manifest_bucket_arn}/*",
     ]
   }
