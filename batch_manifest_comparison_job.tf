@@ -75,7 +75,10 @@ data "aws_iam_policy_document" "kafka_reconciliation_ecs" {
     effect = "Allow"
 
     actions = [
+      "kms:Encrypt",
       "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
       "kms:DescribeKey",
     ]
 
