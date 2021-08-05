@@ -52,7 +52,7 @@ resource "aws_iam_role" "kafka_reconciliation_batch" {
   assume_role_policy = data.aws_iam_policy_document.batch_assume_policy.json
 }
 
-data "aws_iam_policy_document" "kafka_reconciliation_s3" {
+data "aws_iam_policy_document" "kafka_reconciliation_ecs" {
   statement {
     sid    = "AllowS3ObjectInteractions"
     effect = "Allow"
@@ -81,19 +81,28 @@ data "aws_iam_policy_document" "kafka_reconciliation_s3" {
       local.manifest_bucket_cmk,
     ]
   }
-}
 
+  statement {
+    sid    = "AllowAthenaAccess"
+    effect = "Allow"
+    actions = [
+      "athena:StartQueryExecution",
+      "athena:GetQueryExecution",
+      "athena:GetQueryResult*"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+}
 
 resource "aws_iam_policy" "kafka_reconciliation" {
   name   = "kafka_reconciliation"
-  policy = data.aws_iam_policy_document.kafka_reconciliation_s3.json
+  policy = data.aws_iam_policy_document.kafka_reconciliation_ecs.json
 }
 
 resource "aws_iam_role_policy_attachment" "kafka_reconciliation" {
   role       = aws_iam_role.kafka_reconciliation_batch.name
   policy_arn = aws_iam_policy.kafka_reconciliation.arn
 }
-
-
-
 
