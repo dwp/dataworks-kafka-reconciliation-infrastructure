@@ -1,5 +1,5 @@
 locals {
-  kafka_reconciliation_image            = format("%s:%s", data.terraform_remote_state.management.outputs.ecr_kafka_reconciliation_url, image_version.kafka-reconciliation)
+  kafka_reconciliation_image            = format("%s:%s", data.terraform_remote_state.management.outputs.ecr_kafka_reconciliation_url, var.image_version.kafka-reconciliation)
   kafka_reconciliation_application_name = "kafka-reconciliation"
 }
 
