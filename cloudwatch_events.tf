@@ -82,7 +82,7 @@ resource "aws_cloudwatch_metric_alarm" "kafka_reconciliation_failed" {
     RuleName = aws_cloudwatch_event_rule.kafka_reconciliation_failed.name
   }
   tags = {
-    Name              = "kafka_reconciliation_failed",
+    Name              = "kafka_reconciliation_glue_job_failed",
     notification_type = "Error",
     severity          = "High"
   }
