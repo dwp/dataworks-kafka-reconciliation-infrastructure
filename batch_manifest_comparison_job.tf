@@ -61,7 +61,10 @@ data "aws_iam_policy_document" "kafka_reconciliation_ecs" {
     actions = [
       "s3:GetObject",
       "s3:ListBucket",
-      "s3:PutObject"
+      "s3:PutObject",
+      "s3:GetBucketLocation",
+      "s3:ListMultipartUploadParts",
+      "s3:AbortMultipartUpload",
     ]
 
     resources = [
@@ -93,7 +96,9 @@ data "aws_iam_policy_document" "kafka_reconciliation_ecs" {
     actions = [
       "athena:StartQueryExecution",
       "athena:GetQueryExecution",
-      "athena:GetQueryResult*"
+      "athena:GetQueryResult*",
+      "athena:GetWorkGroup",
+      "athena:ListWorkGroups",
     ]
     resources = [
       "*"
