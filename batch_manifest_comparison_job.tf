@@ -1,7 +1,8 @@
 locals {
-  kafka_reconciliation_image            = "${local.account.management}.${local.ingest_vpc_ecr_dkr_domain_name}/kafka-reconciliation:${var.image_version.kafka-reconciliation}"
+  kafka_reconciliation_image            = format("%s:%s", data.terraform_remote_state.management.outputs.ecr_kafka_reconciliation_url, image_version.kafka-reconciliation)
   kafka_reconciliation_application_name = "kafka-reconciliation"
 }
+
 
 resource "aws_batch_job_queue" "kafka_reconciliation" {
   //  TODO: Move compute environment to fargate once Terraform supports it.

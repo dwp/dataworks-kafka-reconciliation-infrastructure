@@ -47,4 +47,14 @@ locals {
     preprod     = 24
     production  = 650
   }
+
+  management_infra_account = {
+    development    = "default"
+    qa             = "default"
+    integration    = "default"
+    management-dev = "default"
+    preprod        = "management"
+    production     = "management"
+    management     = "management"
+  }
 }
