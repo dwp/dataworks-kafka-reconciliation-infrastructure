@@ -43,51 +43,6 @@ resource "aws_cloudwatch_metric_alarm" "kafka_reconciliation_started" {
   }
 }
 
-resource "aws_cloudwatch_event_rule" "kafka_reconciliation_succeeded" {
-  name          = "kafka_reconciliation_succeeded"
-  description   = "Check when Kafka reconciliation task succeeds"
-  event_pattern = <<EOF
-{
-  "source": [
-    "aws.glue"
-  ],
-  "detail-type": [
-    "Glue Job State Change"
-  ],
-  "detail": {
-    "state": [
-      "SUCCEEDED"
-    ],
-    "jobName": [
-      "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
-    ]
-  }
-}
-EOF
-}
-
-resource "aws_cloudwatch_metric_alarm" "kafka_reconciliation_succeeded" {
-  alarm_name                = "kafka_reconciliation_succeeded"
-  comparison_operator       = "GreaterThanOrEqualToThreshold"
-  evaluation_periods        = "1"
-  metric_name               = "TriggeredRules"
-  namespace                 = "AWS/Events"
-  period                    = "60"
-  statistic                 = "Sum"
-  threshold                 = "1"
-  alarm_description         = "Monitoring when kafka reconciliation succeeds"
-  insufficient_data_actions = []
-  alarm_actions             = [data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn]
-  dimensions = {
-    RuleName = aws_cloudwatch_event_rule.kafka_reconciliation_succeeded.name
-  }
-  tags = {
-    Name              = "kafka_reconciliation_succeeded",
-    notification_type = "Information",
-    severity          = "Critical"
-  }
-}
-
 resource "aws_cloudwatch_event_rule" "kafka_reconciliation_failed" {
   name          = "kafka_reconciliation_failed"
   description   = "Check when Kafka reconciliation task fails"
