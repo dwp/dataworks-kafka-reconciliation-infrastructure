@@ -83,7 +83,7 @@ resource "aws_cloudwatch_metric_alarm" "kafka_reconciliation_failed" {
   }
   tags = {
     Name              = "kafka_reconciliation_failed",
-    notification_type = "Information",
+    notification_type = "Error",
     severity          = "Critical"
   }
 }
