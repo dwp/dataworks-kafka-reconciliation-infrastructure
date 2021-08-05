@@ -104,6 +104,22 @@ data "aws_iam_policy_document" "kafka_reconciliation_ecs" {
       "*"
     ]
   }
+
+  statement {
+    sid    = "AllowGlueJobStart"
+    effect = "Allow"
+    actions = [
+      "glue:CreateTable",
+      "glue:GetTable*",
+      "glue:GetDatabase*",
+      "glue:GetPartition*",
+      "glue:DeleteTable",
+      "glue:DeletePartition*",
+    ]
+    resources = [
+      "*"
+    ]
+  }
 }
 
 resource "aws_iam_policy" "kafka_reconciliation" {
