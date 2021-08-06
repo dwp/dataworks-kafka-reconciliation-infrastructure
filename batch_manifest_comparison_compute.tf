@@ -20,10 +20,11 @@ resource "aws_batch_compute_environment" "kafka_reconciliation" {
     type               = "EC2"
 
     tags = {
-        Name         = "kafka_reconciliation",
-        Persistence  = "Ignore",
-        AutoShutdown = "False",
-      }
+      Name         = "kafka_reconciliation",
+      Persistence  = "Ignore",
+      AutoShutdown = "False",
+      SSMEnabled   = "True"
+    }
   }
 
   lifecycle {

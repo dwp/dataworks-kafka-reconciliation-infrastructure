@@ -69,7 +69,7 @@ data "terraform_remote_state" "aws-ingestion" {
 
 data "terraform_remote_state" "management" {
   backend   = "s3"
-  workspace = "management"
+  workspace = local.management_infra_account[local.environment]
 
   config = {
     bucket         = "{{terraform.state_file_bucket}}"

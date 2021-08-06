@@ -19,14 +19,22 @@ resource "aws_lambda_function" "athena_reconciliation_launcher" {
       ENVIRONMENT                = local.environment
       APPLICATION                = "athena_reconciliation_launcher"
       LOG_LEVEL                  = "INFO"
-      MONITORING_SNS_TOPIC       = data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.name
+      MONITORING_SNS_TOPIC       = data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn
       MONITORING_ERRORS_SEVERITY = "High"
       MONITORING_ERRORS_TYPE     = "Warning"
       SLACK_CHANNEL_OVERRIDE     = "dataworks-critical-errors"
       BATCH_JOB_NAME             = local.kafka_reconciliation_application_name
       BATCH_JOB_QUEUE            = aws_batch_job_queue.kafka_reconciliation.name
       BATCH_JOB_DEFINITION_NAME  = aws_batch_job_definition.kafka_reconciliation.name
-      BATCH_PARAMETERS_JSON      = ""
+      BATCH_PARAMETERS_JSON = jsonencode({
+        "manifest_missing_imports_table_name" : local.missing_imports_parquet_table_name,
+        "manifest_missing_exports_table_name" : local.missing_exports_parquet_table_name,
+        "manifest_counts_table_name" : local.manifest_counts_parquet_table_name,
+        "manifest_mismatched_timestamps_table_name" : local.manifest_mismatched_timestamps_table_name,
+        "manifest_report_count_of_ids" : local.manifest_report_count_of_ids,
+        "manifest_prefix" : local.manifest_s3_output_location,
+        "manifest_s3_bucket" : local.manifest_bucket_id
+      })
     }
   }
 

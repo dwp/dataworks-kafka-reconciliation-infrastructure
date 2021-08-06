@@ -1,7 +1,8 @@
 locals {
-  kafka_reconciliation_image            = "${local.account.management}.${local.ingest_vpc_ecr_dkr_domain_name}/kafka-reconciliation:${var.image_version.kafka-reconciliation}"
+  kafka_reconciliation_image            = format("%s:%s", data.terraform_remote_state.management.outputs.ecr_kafka_reconciliation_url, var.image_version.kafka-reconciliation)
   kafka_reconciliation_application_name = "kafka-reconciliation"
 }
+
 
 resource "aws_batch_job_queue" "kafka_reconciliation" {
   //  TODO: Move compute environment to fargate once Terraform supports it.
@@ -24,8 +25,7 @@ resource "aws_batch_job_definition" "kafka_reconciliation" {
             "-t", "Ref::manifest_mismatched_timestamps_table_name",
             "-r", "Ref::manifest_report_count_of_ids",
             "-p", "Ref::manifest_prefix",
-            "-b", "Ref::manifest_s3_bucket",
-            "-m"
+            "-b", "Ref::manifest_s3_bucket"
           ],
       "image": "${local.kafka_reconciliation_image}",
       "jobRoleArn" : "${aws_iam_role.kafka_reconciliation_batch.arn}",
@@ -53,7 +53,7 @@ resource "aws_iam_role" "kafka_reconciliation_batch" {
   assume_role_policy = data.aws_iam_policy_document.batch_assume_policy.json
 }
 
-data "aws_iam_policy_document" "kafka_reconciliation_s3" {
+data "aws_iam_policy_document" "kafka_reconciliation_ecs" {
   statement {
     sid    = "AllowS3ObjectInteractions"
     effect = "Allow"
@@ -61,10 +61,14 @@ data "aws_iam_policy_document" "kafka_reconciliation_s3" {
     actions = [
       "s3:GetObject",
       "s3:ListBucket",
-      "s3:PutObject"
+      "s3:PutObject",
+      "s3:GetBucketLocation",
+      "s3:ListMultipartUploadParts",
+      "s3:AbortMultipartUpload",
     ]
 
     resources = [
+      local.manifest_bucket_arn,
       "${local.manifest_bucket_arn}/*",
     ]
   }
@@ -74,7 +78,10 @@ data "aws_iam_policy_document" "kafka_reconciliation_s3" {
     effect = "Allow"
 
     actions = [
+      "kms:Encrypt",
       "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
       "kms:DescribeKey",
     ]
 
@@ -82,19 +89,46 @@ data "aws_iam_policy_document" "kafka_reconciliation_s3" {
       local.manifest_bucket_cmk,
     ]
   }
-}
 
+  statement {
+    sid    = "AllowAthenaAccess"
+    effect = "Allow"
+    actions = [
+      "athena:StartQueryExecution",
+      "athena:GetQueryExecution",
+      "athena:GetQueryResult*",
+      "athena:GetWorkGroup",
+      "athena:ListWorkGroups",
+    ]
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
+    sid    = "AllowGlueJobStart"
+    effect = "Allow"
+    actions = [
+      "glue:CreateTable",
+      "glue:GetTable*",
+      "glue:GetDatabase*",
+      "glue:GetPartition*",
+      "glue:DeleteTable",
+      "glue:DeletePartition*",
+    ]
+    resources = [
+      "*"
+    ]
+  }
+}
 
 resource "aws_iam_policy" "kafka_reconciliation" {
   name   = "kafka_reconciliation"
-  policy = data.aws_iam_policy_document.kafka_reconciliation_s3.json
+  policy = data.aws_iam_policy_document.kafka_reconciliation_ecs.json
 }
 
 resource "aws_iam_role_policy_attachment" "kafka_reconciliation" {
   role       = aws_iam_role.kafka_reconciliation_batch.name
   policy_arn = aws_iam_policy.kafka_reconciliation.arn
 }
-
-
-
 
