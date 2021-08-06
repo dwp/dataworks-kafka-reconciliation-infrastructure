@@ -23,6 +23,7 @@ resource "aws_batch_compute_environment" "kafka_reconciliation" {
       Name         = "kafka_reconciliation",
       Persistence  = "Ignore",
       AutoShutdown = "False",
+      SSMEnabled   = "True"
     }
   }
 
