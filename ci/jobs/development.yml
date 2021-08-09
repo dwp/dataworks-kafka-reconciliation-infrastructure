@@ -5,8 +5,10 @@ jobs:
       - get: dataworks-kafka-reconciliation-infrastructure
         trigger: true
       - get: dataworks-aws-glue-launcher-release
+        version: { tag: ((glue-launcher-version.development)) }
         trigger: true
       - get: dataworks-athena-reconciliation-launcher-release
+        version: { tag: ((athena-reconciliation-version.development)) }
         trigger: true
       - get: dw-al2-ecs-ami
         trigger: true

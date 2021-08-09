@@ -7,10 +7,12 @@ jobs:
           - qa
         trigger: true
       - get: dataworks-aws-glue-launcher-release
+        version: { tag: ((glue-launcher-version.integration)) }
         passed:
           - qa
         trigger: true
       - get: dataworks-athena-reconciliation-launcher-release
+        version: { tag: ((athena-reconciliation-version.integration)) }
         passed:
           - qa
         trigger: true
