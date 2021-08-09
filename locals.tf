@@ -19,10 +19,10 @@ locals {
   manifest_s3_output_location             = "${local.manifest_s3_output_location_suffix}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
   manifest_s3_output_templates_location   = "s3://${local.manifest_bucket_id}/${local.manifest_s3_output_location}/templates"
 
-  manifest_counts_parquet_table_name        = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_counts_parquet
-  manifest_mismatched_timestamps_table_name = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_mismatched_timestamps_parquet
-  missing_imports_parquet_table_name        = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_missing_imports_parquet
-  missing_exports_parquet_table_name        = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_missing_exports_parquet
+  manifest_counts_parquet_table_name        = "${local.manifest_data_name}.${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_counts_parquet}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
+  manifest_mismatched_timestamps_table_name        = "${local.manifest_data_name}.${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_mismatched_timestamps_parquet}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
+  missing_imports_parquet_table_name        = "${local.manifest_data_name}.${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_missing_imports_parquet}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
+  missing_exports_parquet_table_name        = "${local.manifest_data_name}.${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.table_name_missing_exports_parquet}_${local.manifest_import_type}_${local.manifest_snapshot_type}"
 
   manifest_report_count_of_ids = "10"
 
