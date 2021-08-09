@@ -59,12 +59,13 @@ data "aws_iam_policy_document" "kafka_reconciliation_ecs" {
     effect = "Allow"
 
     actions = [
+      "s3:GetBucketLocation",
       "s3:GetObject",
       "s3:ListBucket",
-      "s3:PutObject",
-      "s3:GetBucketLocation",
+      "s3:ListBucketMultipartUploads",
       "s3:ListMultipartUploadParts",
       "s3:AbortMultipartUpload",
+      "s3:PutObject"
     ]
 
     resources = [

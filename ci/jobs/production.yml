@@ -7,10 +7,12 @@ jobs:
           - preprod
         trigger: true
       - get: dataworks-aws-glue-launcher-release
+        version: { tag: ((glue-launcher-version.production)) }
         passed:
           - preprod
         trigger: true
       - get: dataworks-athena-reconciliation-launcher-release
+        version: { tag: ((athena-reconciliation-version.production)) }
         passed:
           - preprod
         trigger: true

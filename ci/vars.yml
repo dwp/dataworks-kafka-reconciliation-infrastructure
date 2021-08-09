@@ -1,0 +1,13 @@
+glue-launcher-version:
+  development: "0.0.14"
+  qa:          "0.0.14"
+  integration: "0.0.14"
+  preprod:     "0.0.14"
+  production:  "0.0.14"
+
+athena-reconciliation-version:
+  development: "0.0.3"
+  qa:          "0.0.3"
+  integration: "0.0.3"
+  preprod:     "0.0.3"
+  production:  "0.0.3"

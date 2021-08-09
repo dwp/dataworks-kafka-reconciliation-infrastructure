@@ -5,7 +5,9 @@ jobs:
         trigger: true
         version: every
       - get: dataworks-aws-glue-launcher-release
+        version: { tag: ((glue-launcher-version.qa)) }
       - get: dataworks-athena-reconciliation-launcher-release
+        version: { tag: ((athena-reconciliation-version.qa)) }
       - get: dw-al2-ecs-ami
       - put: dataworks-kafka-reconciliation-infrastructure-pr
         params:
