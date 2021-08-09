@@ -7,7 +7,7 @@ resource "aws_cloudwatch_event_rule" "kafka_reconciliation_started" {
     "aws.glue"
   ],
   "detail-type": [
-    "Glue Job State Change"
+    "Glue Job Run Status"
   ],
   "detail": {
     "state": [
@@ -56,7 +56,9 @@ resource "aws_cloudwatch_event_rule" "kafka_reconciliation_failed" {
   ],
   "detail": {
     "state": [
-      "FAILED"
+      "FAILED",
+      "TIMEOUT",
+      "STOPPED"
     ],
     "jobName": [
       "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
