@@ -11,7 +11,7 @@ resource "aws_cloudwatch_event_rule" "kafka_reconciliation_started" {
   ],
   "detail": {
     "state": [
-      "STARTING"
+      "RUNNING"
     ],
     "jobName": [
       "${data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.job_name_combined}"
