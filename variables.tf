@@ -39,6 +39,15 @@ variable "athena_reconciliation_launcher_zip" {
   }
 }
 
+variable "kafka_reconciliation_results_verifier_zip" {
+  type = map(string)
+
+  default = {
+    base_path = ""
+    version   = ""
+  }
+}
+
 variable "costcode" {
   type    = string
   default = ""

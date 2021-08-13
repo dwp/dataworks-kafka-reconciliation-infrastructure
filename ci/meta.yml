@@ -49,6 +49,7 @@ meta:
               cp ../terraform-bootstrap/terraform.tf .
               export TF_VAR_glue_launcher_zip="{base_path = \"../dataworks-aws-glue-launcher-release\", version = \"$(cat ../dataworks-aws-glue-launcher-release/version)\"}"
               export TF_VAR_athena_reconciliation_launcher_zip="{base_path = \"../dataworks-athena-reconciliation-launcher-release\", version = \"$(cat ../dataworks-athena-reconciliation-launcher-release/version)\"}"
+              export TF_VAR_kafka_reconciliation_results_verifier_zip="{base_path = \"../dataworks-kafka-reconciliation-results-verifier-release\", version = \"$(cat ../dataworks-kafka-reconciliation-results-verifier-release/version)\"}"
               export TF_VAR_ecs_hardened_ami_id=$(cat ../dw-al2-ecs-ami/id)
               terraform workspace show
               terraform init
@@ -60,6 +61,7 @@ meta:
           - name: terraform-bootstrap
           - name: dataworks-aws-glue-launcher-release
           - name: dataworks-athena-reconciliation-launcher-release
+          - name: dataworks-kafka-reconciliation-results-verifier-release
           - name: dw-al2-ecs-ami
 
     terraform-plan:
@@ -74,6 +76,7 @@ meta:
               cp ../terraform-bootstrap/terraform.tf .
               export TF_VAR_glue_launcher_zip="{base_path = \"../dataworks-aws-glue-launcher-release\", version = \"$(cat ../dataworks-aws-glue-launcher-release/version)\"}"
               export TF_VAR_athena_reconciliation_launcher_zip="{base_path = \"../dataworks-athena-reconciliation-launcher-release\", version = \"$(cat ../dataworks-athena-reconciliation-launcher-release/version)\"}"
+              export TF_VAR_kafka_reconciliation_results_verifier_zip="{base_path = \"../dataworks-kafka-reconciliation-results-verifier-release\", version = \"$(cat ../dataworks-kafka-reconciliation-results-verifier-release/version)\"}"
               export TF_VAR_ecs_hardened_ami_id=$(cat ../dw-al2-ecs-ami/id)
               terraform workspace show
               terraform init
@@ -84,6 +87,7 @@ meta:
           - name: terraform-bootstrap
           - name: dataworks-aws-glue-launcher-release
           - name: dataworks-athena-reconciliation-launcher-release
+          - name: dataworks-kafka-reconciliation-results-verifier-release
           - name: dw-al2-ecs-ami
 
       params:
