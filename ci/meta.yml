@@ -49,7 +49,7 @@ meta:
               cp ../terraform-bootstrap/terraform.tf .
               export TF_VAR_glue_launcher_zip="{base_path = \"../dataworks-aws-glue-launcher-release\", version = \"$(cat ../dataworks-aws-glue-launcher-release/version)\"}"
               export TF_VAR_athena_reconciliation_launcher_zip="{base_path = \"../dataworks-athena-reconciliation-launcher-release\", version = \"$(cat ../dataworks-athena-reconciliation-launcher-release/version)\"}"
-              export kafka_reconciliation_results_verifier_launcher_zip="{base_path = \"../dataworks-kafka-reconciliation-results-verifier-release\", version = \"$(cat ../dataworks-kafka-reconciliation-results-verifier-release/version)\"}"
+              export kafka_reconciliation_results_verifier_zip="{base_path = \"../dataworks-kafka-reconciliation-results-verifier-release\", version = \"$(cat ../dataworks-kafka-reconciliation-results-verifier-release/version)\"}"
               export TF_VAR_ecs_hardened_ami_id=$(cat ../dw-al2-ecs-ami/id)
               terraform workspace show
               terraform init
@@ -75,7 +75,7 @@ meta:
               cp ../terraform-bootstrap/terraform.tf .
               export TF_VAR_glue_launcher_zip="{base_path = \"../dataworks-aws-glue-launcher-release\", version = \"$(cat ../dataworks-aws-glue-launcher-release/version)\"}"
               export TF_VAR_athena_reconciliation_launcher_zip="{base_path = \"../dataworks-athena-reconciliation-launcher-release\", version = \"$(cat ../dataworks-athena-reconciliation-launcher-release/version)\"}"
-              export kafka_reconciliation_results_verifier_launcher_zip="{base_path = \"../dataworks-kafka-reconciliation-results-verifier-release\", version = \"$(cat ../dataworks-kafka-reconciliation-results-verifier-release/version)\"}"
+              export kafka_reconciliation_results_verifier_zip="{base_path = \"../dataworks-kafka-reconciliation-results-verifier-release\", version = \"$(cat ../dataworks-kafka-reconciliation-results-verifier-release/version)\"}"
               export TF_VAR_ecs_hardened_ami_id=$(cat ../dw-al2-ecs-ami/id)
               terraform workspace show
               terraform init

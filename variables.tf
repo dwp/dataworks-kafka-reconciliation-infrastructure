@@ -39,7 +39,7 @@ variable "athena_reconciliation_launcher_zip" {
   }
 }
 
-variable "kafka_reconciliation_results_verifier_launcher_zip" {
+variable "kafka_reconciliation_results_verifier_zip" {
   type = map(string)
 
   default = {

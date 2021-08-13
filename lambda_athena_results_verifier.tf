@@ -1,5 +1,5 @@
 resource "aws_lambda_function" "kafka_reconciliation_results_verifier_launcher" {
-  filename      = "${var.kafka_reconciliation_results_verifier_launcher_zip["base_path"]}/dataworks-kafka-reconciliation-results-verifier-${var.kafka_reconciliation_results_verifier_launcher_zip["version"]}.zip"
+  filename      = "${var.kafka_reconciliation_results_verifier_zip["base_path"]}/dataworks-kafka-reconciliation-results-verifier-${var.kafka_reconciliation_results_verifier_zip["version"]}.zip"
   function_name = "kafka_reconciliation_results_verifier"
   role          = aws_iam_role.kafka_reconciliation_results_verifier_lambda_role.arn
   handler       = "event_handler.handler"
@@ -7,8 +7,8 @@ resource "aws_lambda_function" "kafka_reconciliation_results_verifier_launcher" 
   source_code_hash = filebase64sha256(
     format(
       "%s/athena-reconciliation-launcher-%s.zip",
-      var.kafka_reconciliation_results_verifier_launcher_zip["base_path"],
-      var.kafka_reconciliation_results_verifier_launcher_zip["version"]
+      var.kafka_reconciliation_results_verifier_zip["base_path"],
+      var.kafka_reconciliation_results_verifier_zip["version"]
     )
   )
   publish = false
