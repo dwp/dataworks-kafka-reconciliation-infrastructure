@@ -15,7 +15,10 @@ jobs:
         version: { tag: ((athena-reconciliation-version.integration)) }
         passed:
           - qa
-        trigger: true
+      - get: dataworks-kafka-reconciliation-results-verifier-release
+        version: { tag: ((results-verifier-version.integration)) }
+        passed:
+          - qa
       - get: dw-al2-ecs-ami
         passed:
           - qa

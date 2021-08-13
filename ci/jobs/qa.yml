@@ -10,6 +10,9 @@ jobs:
       - get: dataworks-athena-reconciliation-launcher-release
         version: { tag: ((athena-reconciliation-version.qa)) }
         trigger: true
+      - get: dataworks-kafka-reconciliation-results-verifier-release
+        version: { tag: ((results-verifier-version.qa)) }
+        trigger: true
       - get: dw-al2-ecs-ami
         trigger: true
 

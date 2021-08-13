@@ -16,6 +16,10 @@ jobs:
         passed:
           - qa
         trigger: true
+      - get: dataworks-kafka-reconciliation-results-verifier-release
+        version: { tag: ((results-verifier-version.preprod)) }
+        passed:
+          - qa
       - get: dw-al2-ecs-ami
         passed:
           - qa
