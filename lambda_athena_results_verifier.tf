@@ -6,7 +6,7 @@ resource "aws_lambda_function" "kafka_reconciliation_results_verifier_launcher" 
   runtime       = "python3.8"
   source_code_hash = filebase64sha256(
     format(
-      "%s/athena-reconciliation-launcher-%s.zip",
+      "%s/reconciliation_results_verifier-%s.zip",
       var.kafka_reconciliation_results_verifier_zip["base_path"],
       var.kafka_reconciliation_results_verifier_zip["version"]
     )
