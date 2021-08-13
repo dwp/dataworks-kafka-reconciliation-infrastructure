@@ -12,7 +12,7 @@ athena-reconciliation-version:
   preprod:     "0.0.3"
   production:  "0.0.3"
 
-  athena-reconciliation-version:
+results-verifier-version:
   development: "0.0.3"
   qa:          "0.0.3"
   integration: "0.0.3"
