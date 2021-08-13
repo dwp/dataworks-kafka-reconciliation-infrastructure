@@ -43,7 +43,7 @@ resources:
     check_every: 5m
     webhook_token: ((dataworks.concourse_github_webhook_token))
 
-  - name: dataworks-kafka-reconciliation-results-verifier
+  - name: dataworks-kafka-reconciliation-results-verifier-release
     type: github-release
     source:
       owner: dwp

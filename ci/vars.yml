@@ -11,3 +11,10 @@ athena-reconciliation-version:
   integration: "0.0.3"
   preprod:     "0.0.3"
   production:  "0.0.3"
+
+  athena-reconciliation-version:
+  development: "0.0.3"
+  qa:          "0.0.3"
+  integration: "0.0.3"
+  preprod:     "0.0.3"
+  production:  "0.0.3"

@@ -10,8 +10,12 @@ jobs:
       - get: dataworks-athena-reconciliation-launcher-release
         version: { tag: ((athena-reconciliation-version.development)) }
         trigger: true
+      - get: dataworks-kafka-reconciliation-results-verifier-release
+        version: { tag: ((results-verifier-version.development)) }
+        trigger: true
       - get: dw-al2-ecs-ami
         trigger: true
       - .: (( inject meta.plan.terraform-bootstrap ))
       - .: (( inject meta.plan.terraform-apply ))
       - .: (( inject meta.plan.terraform-plan ))
+dataworks-kafka-reconciliation-results-verifier
