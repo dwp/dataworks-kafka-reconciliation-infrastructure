@@ -1,5 +1,5 @@
 glue-launcher-version:
-  development: "0.0.15"
+  development: "0.0.16"
   qa:          "0.0.15"
   integration: "0.0.15"
   preprod:     "0.0.15"
