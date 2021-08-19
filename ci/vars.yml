@@ -1,9 +1,9 @@
 glue-launcher-version:
-  development: "0.0.15"
-  qa:          "0.0.15"
-  integration: "0.0.15"
-  preprod:     "0.0.15"
-  production:  "0.0.15"
+  development: "0.0.17"
+  qa:          "0.0.17"
+  integration: "0.0.17"
+  preprod:     "0.0.17"
+  production:  "0.0.17"
 
 athena-reconciliation-version:
   development: "0.0.3"
