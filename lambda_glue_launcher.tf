@@ -36,7 +36,7 @@ resource "aws_lambda_function" "glue_launcher" {
       MANIFEST_S3_INPUT_PARQUET_LOCATION_MISSING_EXPORT        = "${local.manifest_s3_input_parquet_location_base}/missing_export"
       MANIFEST_S3_INPUT_PARQUET_LOCATION_COUNTS                = "${local.manifest_s3_input_parquet_location_base}/counts"
       MANIFEST_S3_INPUT_PARQUET_LOCATION_MISMATCHED_TIMESTAMPS = "${local.manifest_s3_input_parquet_location_base}/mismatched_timestamps"
-      MANIFEST_S3_PREFIX                                        = "${local.manifest_s3_output_location}/templates"
+      MANIFEST_S3_PREFIX                                        = local.manifest_s3_output_location
       MANIFEST_S3_BUCKET                                        = local.manifest_bucket_id
     }
   }
