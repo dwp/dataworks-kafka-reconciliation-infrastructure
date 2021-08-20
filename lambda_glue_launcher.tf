@@ -139,8 +139,8 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
     ]
 
     resources = [
-      local.manifest_bucket_arn,
-      "${local.manifest_bucket_arn}/${local.manifest_s3_output_location}/templates/*"
+      "${local.manifest_bucket_arn}/${local.manifest_s3_output_location}/templates/*",
+      "${local.manifest_bucket_arn}/${local.manifest_s3_output_location}/queries/*"
     ]
   }
 
