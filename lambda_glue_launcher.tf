@@ -39,7 +39,7 @@ resource "aws_lambda_function" "glue_launcher" {
       MANIFEST_S3_OUTPUT_LOCATION                              = local.manifest_s3_output_templates_location
       MANIFEST_S3_PREFIX                                       = local.manifest_s3_output_location
       MANIFEST_S3_BUCKET                                       = local.manifest_bucket_id
-      MANIFEST_DELETION_PREFIXES                               = "templates"
+      MANIFEST_DELETION_PREFIXES                               = "templates, queries"
 
     }
   }
