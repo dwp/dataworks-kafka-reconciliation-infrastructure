@@ -36,8 +36,11 @@ resource "aws_lambda_function" "glue_launcher" {
       MANIFEST_S3_INPUT_PARQUET_LOCATION_MISSING_EXPORT        = "${local.manifest_s3_input_parquet_location_base}/missing_export"
       MANIFEST_S3_INPUT_PARQUET_LOCATION_COUNTS                = "${local.manifest_s3_input_parquet_location_base}/counts"
       MANIFEST_S3_INPUT_PARQUET_LOCATION_MISMATCHED_TIMESTAMPS = "${local.manifest_s3_input_parquet_location_base}/mismatched_timestamps"
-      MANIFEST_S3_PREFIX                                        = local.manifest_s3_output_location
-      MANIFEST_S3_BUCKET                                        = local.manifest_bucket_id
+      MANIFEST_S3_OUTPUT_LOCATION                              = local.manifest_s3_output_templates_location
+      MANIFEST_S3_PREFIX                                       = local.manifest_s3_output_location
+      MANIFEST_S3_BUCKET                                       = local.manifest_bucket_id
+      MANIFEST_DELETION_PREFIXES                               = "templates"
+
     }
   }
 
@@ -125,6 +128,19 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
     resources = [
       local.manifest_bucket_arn,
       "${local.manifest_bucket_arn}/*"
+    ]
+  }
+
+  statement {
+    sid    = "AllowS3Deletion"
+    effect = "Allow"
+    actions = [
+      "s3:DeleteObject"
+    ]
+
+    resources = [
+      local.manifest_bucket_arn,
+      "${local.manifest_bucket_arn}/${local.manifest_s3_output_location}/templates/*"
     ]
   }
 
