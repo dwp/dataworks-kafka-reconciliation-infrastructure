@@ -132,6 +132,19 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
   }
 
   statement {
+    sid    = "AllowS3Deletion"
+    effect = "Allow"
+    actions = [
+      "s3:DeleteObject"
+    ]
+
+    resources = [
+      local.manifest_bucket_arn,
+      "${local.manifest_bucket_arn}/${local.manifest_s3_output_location}/templates/*"
+    ]
+  }
+
+  statement {
     sid    = "AllowInteractWithS3Objects"
     effect = "Allow"
 
