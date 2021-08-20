@@ -16,10 +16,10 @@ resource "aws_lambda_function" "kafka_reconciliation_results_verifier_launcher" 
 
   environment {
     variables = {
-      ENVIRONMENT                = local.environment
-      APPLICATION                = "kafka_reconciliation_results_verifier"
-      LOG_LEVEL                  = "INFO"
-      SNS_TOPIC                  = data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn
+      ENVIRONMENT = local.environment
+      APPLICATION = "kafka_reconciliation_results_verifier"
+      LOG_LEVEL   = "INFO"
+      SNS_TOPIC   = data.terraform_remote_state.security-tools.outputs.sns_topic_london_monitoring.arn
 
     }
   }
@@ -29,7 +29,7 @@ resource "aws_lambda_function" "kafka_reconciliation_results_verifier_launcher" 
   }
 
   depends_on = [
-  aws_cloudwatch_log_group.kafka_reconciliation_results_verifier_lambda
+    aws_cloudwatch_log_group.kafka_reconciliation_results_verifier_lambda
   ]
 }
 
