@@ -40,7 +40,7 @@ resource "aws_lambda_function" "glue_launcher" {
       MANIFEST_S3_PREFIX                                       = local.manifest_s3_output_location
       MANIFEST_S3_BUCKET                                       = local.manifest_bucket_id
       MANIFEST_DELETION_PREFIXES                               = "templates, queries"
-
+      MANIFEST_PARQUET_S3_BASE_LOCATION                        = local.manifest_s3_parquet_prefix
     }
   }
 
@@ -140,7 +140,8 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
 
     resources = [
       local.manifest_bucket_arn,
-      "${local.manifest_bucket_arn}/${local.manifest_s3_output_location}/templates/*"
+      "${local.manifest_bucket_arn}/${local.manifest_s3_output_location}/templates/*",
+      "${local.manifest_bucket_arn}/${local.manifest_s3_parquet_prefix}/*"
     ]
   }
 
