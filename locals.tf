@@ -50,6 +50,14 @@ locals {
     production  = 650
   }
 
+  glue_job_max_daily_runs = {
+    development = 1
+    qa          = 1
+    integration = 1
+    preprod     = 1
+    production  = 5
+  }
+
   management_infra_account = {
     development    = "default"
     qa             = "default"
