@@ -78,7 +78,7 @@ resource "aws_cloudwatch_event_target" "retry_glue_job_on_failure" {
         "jobName": "retry_glue_job_on_failure",
         "jobQueue": "aws_cloudwatch_event_target",
         "status": "SUCCEEDED",
-        "ignoreBatchChecks": "true",
+        "ignoreBatchChecks": "true"
     }
 }
 EOF
