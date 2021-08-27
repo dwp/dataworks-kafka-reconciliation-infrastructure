@@ -41,6 +41,7 @@ resource "aws_lambda_function" "glue_launcher" {
       MANIFEST_S3_BUCKET                                       = local.manifest_bucket_id
       MANIFEST_DELETION_PREFIXES                               = "templates, queries"
       MANIFEST_PARQUET_S3_BASE_LOCATION                        = local.manifest_s3_parquet_prefix
+      MAX_DAILY_RUNS                                           = local.glue_job_max_daily_runs[local.environment]
     }
   }
 
