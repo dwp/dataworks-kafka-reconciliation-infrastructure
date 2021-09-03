@@ -1,22 +1,13 @@
 # dataworks-kafka-reconciliation-infrastructure
 
-## Infrastructure repository for kafka reconciliation related tasks
+## Kafka Reconciliation Process
 
-This repo contains Makefile and base terraform folders and jinja2 files to fit the standard pattern.
-This repo is a base to create new Terraform repos, renaming the template files and adding the githooks submodule, making the repo ready for use.
+### What and Why
 
-Running aviator will create the pipeline required on the AWS-Concourse instance, in order pass a mandatory CI ran status check.  this will likely require you to login to Concourse, if you haven't already.
+### How
+Corporate Storage Coalescer 'Success or Failure' status on Batch > Glue Launcher Lambda > 'ETL' Glue Job > Batch manifest comparison > Kafka reconciliation results verifier lambda
 
-After cloning this repo, please generate `terraform.tf` and `terraform.tfvars` files:  
-`make bootstrap`
+### When
+Every day.
 
-In addition, you may want to do the following: 
-
-1. Create non-default Terraform workspaces as and if required:  
-    `make terraform-workspace-new workspace=<workspace_name>` e.g.  
-    ```make terraform-workspace-new workspace=qa```
-
-1. Configure Concourse CI pipeline:
-    1. Add/remove jobs in `./ci/jobs` as required 
-    1. Create CI pipeline:  
-`aviator`
+Schedule of corporate storage coalescer - which in turn kicks everything else off.
