@@ -9,6 +9,7 @@ There is a chain of different products / applications which are used to validate
 
 ### How & When
 The sequence of events which are chained, that create the 'Kafka Reconciliation Process'.
+![kafka-reconciliation-process-diagram](kafka_reconciliation.png)
 
 1. Something something `batch_corporate_storage_coalescer` something something
 1. Status updates for the `batch_corporate_storage_coalescer` & `batch_corporate_storage_coalescer` batch jobs invoke the `glue_launcher` lambda via a Cloudwatch event rule of the same name.
