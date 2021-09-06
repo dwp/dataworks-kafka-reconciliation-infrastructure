@@ -94,6 +94,8 @@ These are queries which tell us information about the import data only. We are n
 These are queries purely for information only and they help with debugging. They can only be run by themselves.
 
 ## Alerts
+The process generates alerts whenever any part of the process fails.
+
 For further detail, see:
 [Kafka reconciliation - missing records](https://git.ucd.gpn.gov.uk/dip/aws-common-infrastructure/wiki/DataWorks-AWS-Corporate-Storage#kafka-reconciliation---missing-records)
 [Manifest glue job failed](https://git.ucd.gpn.gov.uk/dip/aws-common-infrastructure/wiki/DataWorks-AWS-Corporate-Storage#manifest-glue-job-failed)
