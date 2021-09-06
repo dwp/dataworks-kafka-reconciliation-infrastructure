@@ -15,13 +15,13 @@ The sequence of events which are chained, that create the 'Kafka Reconciliation 
 
 1. The batch job `batch_corporate_storage_coalescer` is started via Cloudwatch Rules located [here](https://github.com/dwp/dataworks-aws-ingest-consumers/blob/master/batch_coalescer_trigger_events.tf), which run in the early hours of the morning. 
    A detailed explanation of the tasks activity can be found on the [dataworks-corporate-storage-coalescence readme](https://github.com/dwp/dataworks-corporate-storage-coalescence)
-1. Alternatively the manual way to trigger the `batch_corporate_storage_coalescer` is via the ConcourseCI Pipeline `corporate-storage-coalescer`.
-1. Status updates for the `batch_corporate_storage_coalescer` & `batch_corporate_storage_coalescer` batch jobs invoke the `glue_launcher` lambda via a Cloudwatch event rule of the same name.
+1. Alternatively the manual way to trigger the `batch_corporate_storage_coalescer` is via the ConcourseCI Pipeline [`corporate-storage-coalescer`](https://ci.dataworks.dwp.gov.uk/teams/utility/pipelines/corporate-storage-coalescer)
+1. Status updates for the `batch_corporate_storage_coalescer` & `batch_corporate_storage_coalescer` batch jobs invoke the `glue_launcher` lambda via a Cloudwatch event rule of the same name. View [`dataworks-aws-glue-launcher`](https://github.com/dwp/dataworks-aws-glue-launcher) repo for further details.
 1. Upon ETL Glue job completion, the `manifest_glue_job_completed` Cloudwatch rule will fire. This rule will send an SNS message to `kafka_reconciliation` SNS topic.
-1. The receipt of the SNS topic `kafka_reconciliation` is the `athena_reconciliation_launcher` lambda. This lambda will launch the `kafka-reconciliation` batch job.
-1. The `kafka-reconciliation` batch job will run Athena queries - comparing data. Once finished, the batch job outputs results to S3 location `business-data/manifest/query-output_streaming_main_incremental/results/`
-1. On the presence of objects in the S3 prefix `business-data/manifest/query-output_streaming_main_incremental/results/`, the `kafka_reconciliation_results_verifier` lambda is invoked by an S3 alert.
-1. The `kafka_reconciliation_results_verifier` lambda reviews the items in the S3 location, and alerts via Slack the counts for total and missing exports.
+1. The receipt of the SNS topic `kafka_reconciliation` is the `athena_reconciliation_launcher` lambda. View [`dataworks-athena-reconciliation-launcher`](https://github.com/dwp/dataworks-athena-reconciliation-launcher) repo for further details. This lambda will launch the `kafka-reconciliation` batch job.
+1. The `kafka-reconciliation` batch job will run Athena queries - comparing the data. View [`docker-kafka-reconciliation`](https://github.com/dwp/docker-kafka-reconciliation) repo for further details. Once the batch job finishes, it outputs results to S3 location `business-data/manifest/query-output_streaming_main_incremental/results/`
+1. On the presence of objects in the S3 location `manifest_bucket/business-data/manifest/query-output_streaming_main_incremental/results/`, the `kafka_reconciliation_results_verifier` lambda is invoked by an S3 alert.
+1. The `kafka_reconciliation_results_verifier` lambda reviews the items in the S3 location, and alerts via Slack the counts for total and missing exports. View the [`dataworks-kafka-reconciliation-results-verifier`](https://github.com/dwp/dataworks-kafka-reconciliation-results-verifier) repo for further details.
 1. The Slack alerts are sent to `#dataworks-aws-production-notifications` if successful or `#dataworks-aws-critical-alerts` if unsuccessful.
 
 ## What will it show?
@@ -52,14 +52,14 @@ The manifests contain the following:
 
 * One row in a CSV format for each record:
 ** For K2HB, this is every valid record that is decrypted and imported
-* * For HTME, this is every valid record that is written to a snapshot file successfully
+** For HTME, this is every valid record that is written to a snapshot file successfully
 * Each row contains the following information for a record:
-* * The "id" field for the record which is used as HBase record key, pre-formatted
-* * The timestamp that is against the record in epoch format
-* * The database the record is from
-* * The collection the record is from
-* * The type of record (i.e. IMPORT or EXPORT)
-* * The source of the record (either "K2HB" or the "@type" field from Kafka messages)
+** The "id" field for the record which is used as HBase record key, pre-formatted
+** The timestamp that is against the record in epoch format
+** The database the record is from
+** The collection the record is from
+** The type of record (i.e. IMPORT or EXPORT)
+** The source of the record (either "K2HB" or the "@type" field from Kafka messages)
 
 ## Technical Details
 ### Report generation - technical details
@@ -68,10 +68,16 @@ The manifest set generation is explained above and for technical details on K2HB
 This repo contains the code to generate the manifest report itself and so will explain the technical details here.
 
 ### Create Athena tables
-The first step is to generate Athena tables for the manifest sets. There are sql template files for creating these tables that CI passes in the location of the manifest sets from the terraform outputs. Two tables are created - one for import and one for export. They act as layers over the top of the S3 locations - when a query is executed in Athena, it actually runs directly against the S3 files using the table as a structure pointer for the files. We use CSV format for the manifests and this correlates to columns in the Athena tables.
+The first step is to generate Athena tables for the manifest sets. This is done by the `glue_launcher` lambda. There are sql template files for creating these tables that are packaged in the `glue-launcher` lambda release.
+Two tables are created - one for import and one for export. They act as layers over the top of the S3 locations - when a query is executed in Athena, it actually runs directly against the S3 files using the table as a structure pointer for the files. 
+We use CSV format for the manifests and this correlates to columns in the Athena tables.
 
 ### Execute Glue job
-AWS Glue is used to generate a combined table from the import and export Athena tables. To do this, there is a job (stored and deployed from aws-ingestion repo) which gets the data from the Athena tables and performs pyspark jobs on the data to generate a full table of all records. Matching ids from both tables go on the same row and calculations like which manifest set has the earliest timestamp, the types of records and other things are worked out in the glue job and added to the table. The results are saved are perquet files (a format similar to json but more performant for big data queries). The glue job produces another Athena table for the combined data and this acts like the others. The difference is that this table sits over the parquet files in S3. If they were json format all the sql queries we run would time out.
+AWS Glue is used to generate a combined table from the import and export Athena tables. To do this, there is a job (stored and deployed from aws-ingestion repo) which gets the data from the Athena tables and performs pyspark jobs on the data to generate a full table of all records.
+This Glue job is invoked by the `glue_launcher` lambda if a success or failure status has been received from the `batch_corporate_storage_coalescer` batch jobs and no other corporate storage coalescer jobs exist in the batch queue.
+Matching ids from both tables go on the same row and calculations like which manifest set has the earliest timestamp, the types of records and other things are worked out in the glue job and added to the table. 
+The results are saved are perquet files (a format similar to json but more performant for big data queries). The glue job produces another Athena table for the combined data and this acts like the others. 
+The difference is that this table sits over the parquet files in S3. If they were json format all the sql queries we run would time out.
 
 ### Generate the queries
 In the athena kafka docker repo, there are lots of SQL queries which we use to run against the combined table and produce the reports. See the top of this document for the explanations of each query output. Technically, these are Presto SQL queries as Athena runs Presto SQL under the hood. This is slightly different to Oracle syntax, MS SQL syntax or other SQL flavours but has documentation on the internet to help.
