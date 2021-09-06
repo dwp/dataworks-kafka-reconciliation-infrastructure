@@ -65,7 +65,7 @@ The manifests contain the following:
 ### Report generation - technical details
 The manifest set generation is explained above and for technical details on K2HB or HTME have a look at their individual repos.
 
-This repo contains the code to generate the manifest report itself and so will explain the technical details here. Manifest generation is done via the behave feature manifest-generation and the code can be found there. There are a number of steps that are performed when a manifest is generated. You should be able to view the features and steps in the behave code and follow what they do against the steps below.
+This repo contains the code to generate the manifest report itself and so will explain the technical details here.
 
 ### Create Athena tables
 The first step is to generate Athena tables for the manifest sets. There are sql template files for creating these tables that CI passes in the location of the manifest sets from the terraform outputs. Two tables are created - one for import and one for export. They act as layers over the top of the S3 locations - when a query is executed in Athena, it actually runs directly against the S3 files using the table as a structure pointer for the files. We use CSV format for the manifests and this correlates to columns in the Athena tables.
