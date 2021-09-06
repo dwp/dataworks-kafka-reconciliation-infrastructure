@@ -63,7 +63,7 @@ The manifests contain the following:
 
 ## Technical Details
 ### Report generation - technical details
-The manifest set generation is explained above and for technical details on HDI or HTME have a lot at their individual repos.
+The manifest set generation is explained above and for technical details on K2HB or HTME have a look at their individual repos.
 
 This repo contains the code to generate the manifest report itself and so will explain the technical details here. Manifest generation is done via the behave feature manifest-generation and the code can be found there. There are a number of steps that are performed when a manifest is generated. You should be able to view the features and steps in the behave code and follow what they do against the steps below.
 
