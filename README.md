@@ -101,5 +101,7 @@ For further detail, see:
 [Manifest glue job failed](https://git.ucd.gpn.gov.uk/dip/aws-common-infrastructure/wiki/DataWorks-AWS-Corporate-Storage#manifest-glue-job-failed)
 
 ## Legacy
-The [behave framework](https://github.com/dwp/dataworks-behavioural-framework) currently operates the reconciliation on the `manifest-comparison` ConcourseCI pipeline. The new kafka reconciliation can be triggered by starting the `corporate-storage-coalescer` pipeline.
+The [behave framework](https://github.com/dwp/dataworks-behavioural-framework) used to be used for the kafka reconciliation process (then known as the `manifest comparison` process) and all that code still exists and works and uses the `manifest-comparison` ConcourseCI pipeline.
+
+In the future, it would be good to move relevant parts to the new process (mainly the e2e jobs) and remove the remaining legacy tasks.
 Further information regarding the legacy manifest comparison can be found in the [data reconciliation readme](https://github.com/dwp/dataworks-behavioural-framework/blob/master/docs/data-reconciliation.md)
