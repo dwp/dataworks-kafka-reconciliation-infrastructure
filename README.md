@@ -19,5 +19,5 @@ The sequence of events which are chained, that create the 'Kafka Reconciliation 
 1. The receipt of the SNS topic `kafka_reconciliation` is the `athena_reconciliation_launcher` lambda. This lambda will launch the `kafka-reconciliation` batch job.
 1. The `kafka-reconciliation` batch job will run Athena queries - comparing data. Once finished, the batch job outputs results to S3 location `business-data/manifest/query-output_streaming_main_incremental/results/`
 1. On the presence of objects in the S3 prefix `business-data/manifest/query-output_streaming_main_incremental/results/`, the `kafka_reconciliation_results_verifier` lambda is invoked.
-1. The `kafka_reconciliation_results_verifier` lambda DOES WHAT?!
-1. Places a result of the verification into the Slack channel `#dataworks-aws-production-notifications` if successful or `#dataworks-aws-critical-alerts` if unsuccessful.
+1. The `kafka_reconciliation_results_verifier` lambda reviews the items in the S3 location, and alerts via Slack the counts for total and missing exports.
+1. The Slack alerts are sent to `#dataworks-aws-production-notifications` if successful or `#dataworks-aws-critical-alerts` if unsuccessful.
