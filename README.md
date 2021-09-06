@@ -51,7 +51,7 @@ Database
 The manifests contain the following:
 
 * One row in a CSV format for each record:
-* * For K2HB, this is every valid record that is decrypted and imported
+** For K2HB, this is every valid record that is decrypted and imported
 * * For HTME, this is every valid record that is written to a snapshot file successfully
 * Each row contains the following information for a record:
 * * The "id" field for the record which is used as HBase record key, pre-formatted
