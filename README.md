@@ -7,7 +7,7 @@ This repo contains the infrastructure for the three key lambdas, batch jobs and 
 We want to reconcile the messages received from UC over the Kafka Broker, ensuring our consumers have received all messages, placed them in Hbase and are retrievable from Hbase.
 There is a chain of different products / applications which are used to validate the kafka input equals the Hbase output.
 
-The data reconciliation process compares the individual records across the timespan that have been imported from the data dump to the individual records that are exported to Crown. This provides very high confidence in the data quality and that no records are missing from the Kafka stream or have gone missing during the ingestion process.
+The data reconciliation process compares the individual records across the timespan that have been imported from Kafka to the individual records that are exported from HBase. This provides very high confidence in the data quality and that no records have been lost by the ingestion and export process.
 
 ### How & When
 The sequence of events which are chained, that create the 'Kafka Reconciliation Process'.
