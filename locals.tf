@@ -1,4 +1,12 @@
 locals {
+  kafka_reconciliation_active = {
+    development = false
+    qa          = false
+    integration = false
+    preprod     = false
+    production  = true
+  }
+  
   common_tags = {
     Environment  = local.environment
     Application  = "dataworks-kafka-reconciliation-infrastructure"
