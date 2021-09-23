@@ -4,7 +4,7 @@ locals {
     qa          = false
     integration = false
     preprod     = false
-    production  = false
+    production  = true
   }
   
   common_tags = {
@@ -19,7 +19,7 @@ locals {
   manifest_bucket_id     = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket.id
   manifest_bucket_arn    = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket.arn
   manifest_bucket_cmk    = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket_cmk.arn
-  manifest_import_type   = "streaming_main"
+  manifest_import_type   = "streaming_all"
   manifest_snapshot_type = "incremental"
   manifest_data_name     = data.terraform_remote_state.dataworks-aws-ingest-consumers.outputs.manifest_etl.database_name
 
