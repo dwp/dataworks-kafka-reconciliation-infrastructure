@@ -25,7 +25,7 @@ resource "aws_lambda_function" "glue_launcher" {
       MANIFEST_MISMATCHED_TIMESTAMPS_TABLE_NAME                = local.manifest_mismatched_timestamps_table_name
       MANIFEST_MISSING_IMPORTS_TABLE_NAME                      = local.missing_imports_parquet_table_name
       MANIFEST_MISSING_EXPORTS_TABLE_NAME                      = local.missing_exports_parquet_table_name
-      MANIFEST_S3_INPUT_LOCATION_IMPORT                        = data.terraform_remote_state.aws-ingestion.outputs.manifest_comparison_parameters.streaming_folder_main
+      MANIFEST_S3_INPUT_LOCATION_IMPORT                        = data.terraform_remote_state.aws-ingestion.outputs.manifest_comparison_parameters.streaming_base
       MANIFEST_S3_INPUT_LOCATION_EXPORT                        = "${data.terraform_remote_state.aws-internal-compute.outputs.manifest_s3_prefixes.export}/${local.manifest_snapshot_type}"
       MANIFEST_COMPARISON_CUT_OFF_DATE_START                   = "PREVIOUS_DAY_MIDNIGHT" # Set an 'YYYY-MM-DD HH:MM:SS' to define. Else lambda will calculate date if empty or set to "PREVIOUS_DAY_MIDNIGHT"
       MANIFEST_COMPARISON_CUT_OFF_DATE_END                     = "TODAY_MIDNIGHT"        # Set an 'YYYY-MM-DD HH:MM:SS' to define. Else lambda will calculate date if empty or set to "TODAY_MIDNIGHT"
