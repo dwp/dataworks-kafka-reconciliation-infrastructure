@@ -111,7 +111,7 @@ data "aws_iam_policy_document" "kafka_reconciliation_ecs" {
     effect = "Allow"
     actions = [
       "glue:CreateTable",
-      "glue:GetTable*",
+      "glue:Get*",
       "glue:GetDatabase*",
       "glue:GetPartition*",
       "glue:DeleteTable",
