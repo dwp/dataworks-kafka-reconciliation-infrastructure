@@ -26,7 +26,7 @@ jobs:
             - name: dataworks-kafka-reconciliation-infrastructure
           outputs:
             - name: pipeline
-      - set_pipeline: dataworks-kafka-reconciliation-infrastructure
+      - set_pipeline: kafka-reconciliation-infrastructure
         file: pipeline/aviator_pipeline.yml
         var_files:
           - pipeline/vars.yml
