@@ -89,7 +89,7 @@ data "aws_iam_policy_document" "glue_launcher_lambda" {
     actions = [
       "glue:CreateTable",
       "glue:StartJobRun",
-      "glue:GetTable*",
+      "glue:Get*",
       "glue:GetDatabase*",
       "glue:GetPartition*",
       "glue:DeleteTable",
