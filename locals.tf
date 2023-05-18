@@ -16,7 +16,10 @@ locals {
     AutoShutdown = "False"
   }
 
-  ingest_internet_proxy  = data.terraform_remote_state.ingest.outputs.internet_proxy
+  common_config_bucket         = data.terraform_remote_state.common.outputs.config_bucket
+  common_config_bucket_cmk_arn = data.terraform_remote_state.common.outputs.config_bucket_cmk.arn
+
+  ingest_internet_proxy  = data.terraform_remote_state.aws-ingestion.outputs.internet_proxy
 
   cw_kafka_recon_agent_namespace                 = "/app/kafka-reconciliation"
   cw_kafka_recon_agent_log_group_name            = "/app/kafka-reconciliation"  
