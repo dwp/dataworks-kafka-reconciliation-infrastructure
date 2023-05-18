@@ -18,7 +18,7 @@ locals {
 
   ingest_internet_proxy  = data.terraform_remote_state.ingest.outputs.internet_proxy
 
-  cw_kafka_recon_agent_namespace                 = "/app/kafka-recon"
+  cw_kafka_recon_agent_namespace                 = "/app/kafka-reconciliation"
   cw_kafka_recon_agent_log_group_name            = "/app/kafka-reconciliation"  
 
   cw_agent_metrics_collection_interval                  = 60
