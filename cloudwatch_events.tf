@@ -189,3 +189,9 @@ resource "aws_cloudwatch_event_target" "batch_coalescer_long_running_job_status_
   rule = aws_cloudwatch_event_rule.batch_coalescer_long_running_job_status_change.name
   arn  = aws_lambda_function.glue_launcher.arn
 }
+
+resource "aws_cloudwatch_log_group" "kafka_reconciliation_ecs_cluster" {
+  name              = local.cw_k2hb_recon_trimmer_agent_log_group_name
+  retention_in_days = 180
+  tags              = local.common_tags
+}

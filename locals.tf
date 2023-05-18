@@ -16,6 +16,18 @@ locals {
     AutoShutdown = "False"
   }
 
+  ingest_internet_proxy  = data.terraform_remote_state.ingest.outputs.internet_proxy
+
+  cw_kafka_recon_agent_namespace                 = "/app/kafka-recon"
+  cw_kafka_recon_agent_log_group_name            = "/app/kafka-reconciliation"  
+
+  cw_agent_metrics_collection_interval                  = 60
+  cw_agent_cpu_metrics_collection_interval              = 60
+  cw_agent_disk_measurement_metrics_collection_interval = 60
+  cw_agent_disk_io_metrics_collection_interval          = 60
+  cw_agent_mem_metrics_collection_interval              = 60
+  cw_agent_netstat_metrics_collection_interval          = 60
+
   manifest_bucket_id     = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket.id
   manifest_bucket_arn    = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket.arn
   manifest_bucket_cmk    = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket_cmk.arn
