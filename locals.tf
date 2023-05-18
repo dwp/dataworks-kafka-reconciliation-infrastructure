@@ -90,4 +90,20 @@ locals {
     production     = "management"
     management     = "management"
   }
+
+  kafka_recon_asg_autoshutdown = {
+    development = "False"
+    qa          = "False"
+    integration = "False"
+    preprod     = "False"
+    production  = "False"
+  }
+
+  kafka_recon_asg_ssmenabled = {
+    development = "True"
+    qa          = "True"
+    integration = "True"
+    preprod     = "False"
+    production  = "False"
+  }
 }

@@ -78,8 +78,8 @@ resource "aws_launch_template" "kafka_reconciliation_ecs_cluster" {
       local.common_tags,
       {
         Name                = "kafka-reconciliation",
-        AutoShutdown        = local.k2hb_main_asg_autoshutdown[local.environment],
-        SSMEnabled          = local.k2hb_main_asg_ssmenabled[local.environment],
+        AutoShutdown        = local.kafka_recon_asg_autoshutdown[local.environment],
+        SSMEnabled          = local.kafka_recon_asg_ssmenabled[local.environment],
         Persistence         = "Ignore",
         propagate_at_launch = true,
       }
