@@ -22,12 +22,15 @@ resource "aws_batch_compute_environment" "kafka_reconciliation" {
       launch_template_id      = aws_launch_template.kafka_reconciliation_ecs_cluster.id
       version                 = aws_launch_template.kafka_reconciliation_ecs_cluster.latest_version
     }
-    tags = {
-      Name         = "kafka_reconciliation",
-      Persistence  = "Ignore",
-      AutoShutdown = "False",
-      SSMEnabled   = "True"
-    }
+
+    tags = merge(
+      local.common_tags,
+      {
+        Name         = "kafka_reconciliation",
+        Persistence  = "Ignore",
+        AutoShutdown = "False",
+      }
+    )
   }
 
   lifecycle {
