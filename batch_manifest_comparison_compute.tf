@@ -26,9 +26,7 @@ resource "aws_batch_compute_environment" "kafka_reconciliation" {
     tags = merge(
       local.common_tags,
       {
-        Name         = "kafka_reconciliation",
-        Persistence  = "Ignore",
-        AutoShutdown = "False",
+        Name         = "kafka_reconciliation"
       }
     )
   }
