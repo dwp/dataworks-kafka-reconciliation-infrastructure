@@ -8,9 +8,9 @@ locals {
   }
   
   common_tags = {
-    DWX_Environment  = local.environment
-    DWX_Application  = "dataworks-kafka-reconciliation-infrastructure"
-    Persistence  = "Ignore"
+    DWX_Environment = local.environment
+    DWX_Application = "dataworks-kafka-reconciliation-infrastructure"
+    Persistence     = "Ignore"
   }
 
   common_config_bucket         = data.terraform_remote_state.common.outputs.config_bucket
