@@ -6,5 +6,5 @@
 **/*.tfstate*
 
 terraform.tf
-aviator_pipeline.yml
-aviator_pipeline_kafka-reconciliation.yml
+aviator_*.yml
+
