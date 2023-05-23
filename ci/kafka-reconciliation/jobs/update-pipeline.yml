@@ -1,0 +1,29 @@
+jobs:
+  - name: update-pipeline
+    plan:
+      - get: dataworks-kafka-reconciliation-infrastructure
+        resource: dataworks-kafka-reconciliation-infrastructure
+        trigger: true
+      - task: aviator
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: ((dataworks.docker_aviator_repository))
+              version: ((dataworks.docker_aviator_version))
+          run:
+            path: sh
+            args:
+              - -exc
+              - |
+                sed -i 's/fly/nofly/' aviator-kafka-reconciliation.yml
+                /usr/bin/aviator -f aviator-kafka-reconciliation.yml
+                mv aviator_pipeline_kafka-reconciliation.yml ../pipeline
+            dir: dataworks-kafka-reconciliation-infrastructure
+          inputs:
+            - name: dataworks-kafka-reconciliation-infrastructure
+          outputs:
+            - name: pipeline
+      - set_pipeline: kafka-reconciliation
+        file: pipeline/aviator_pipeline_kafka-reconciliation.yml

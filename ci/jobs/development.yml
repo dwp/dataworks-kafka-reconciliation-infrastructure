@@ -4,6 +4,8 @@ jobs:
     plan:
       - get: dataworks-kafka-reconciliation-infrastructure
         trigger: true
+      - get: dataworks-kafka-reconciliation-infrastructure-dev
+        trigger: true
       - get: dataworks-aws-glue-launcher-release
         version: { tag: ((glue-launcher-version.development)) }
         trigger: true
@@ -16,6 +18,12 @@ jobs:
       - get: dw-al2-ecs-ami
         trigger: true
       - .: (( inject meta.plan.terraform-bootstrap ))
+        input_mapping:
+          dataworks-kafka-reconciliation-infrastructure: dataworks-kafka-reconciliation-infrastructure-dev
       - .: (( inject meta.plan.terraform-apply ))
+        input_mapping:
+          dataworks-kafka-reconciliation-infrastructure: dataworks-kafka-reconciliation-infrastructure-dev
       - .: (( inject meta.plan.terraform-plan ))
+        input_mapping:
+          dataworks-kafka-reconciliation-infrastructure: dataworks-kafka-reconciliation-infrastructure-dev
       

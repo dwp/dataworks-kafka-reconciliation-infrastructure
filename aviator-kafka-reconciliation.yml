@@ -1,0 +1,18 @@
+spruce:
+  - base: ci/kafka-reconciliation/meta-kafka-reconciliation.yml
+    prune:
+      - meta-kafka-reconciliation
+    merge:
+      - with_in: ci/kafka-reconciliation/
+        regexp: ".*yml"
+      - with_in: ci/kafka-reconciliation/jobs/
+        regexp: ".*yml"
+    to: aviator_pipeline_kafka-reconciliation.yml
+fly:
+  name: kafka-reconciliation
+  target: utility
+  config: aviator_pipeline_kafka-reconciliation.yml
+  expose: true
+  check_creds: true
+  load_vars_from:
+    - ci/vars.yml

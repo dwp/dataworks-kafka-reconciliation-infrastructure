@@ -1,0 +1,71 @@
+resources:
+  - name: aws-ingestion
+    type: git
+    source:
+      branch: master
+      api_endpoint: https://((dataworks.enterprise_github_url))/api/v3/
+      username: ((dataworks.enterprise_github_username))
+      password: ((dataworks-secrets.enterprise_github_pat))
+      uri: https://((dataworks.enterprise_github_url))/dip/aws-ingestion.git
+    check_every: 5m
+    webhook_token: ((dataworks.concourse_github_webhook_token))
+
+  - name: aws-internal-compute
+    type: git
+    source:
+      branch: master
+      api_endpoint: https://((dataworks.enterprise_github_url))/api/v3/
+      username: ((dataworks.enterprise_github_username))
+      password: ((dataworks-secrets.enterprise_github_pat))
+      uri: https://((dataworks.enterprise_github_url))/dip/aws-internal-compute.git
+      ignore_path:
+        - ci/*
+        - aviator.yml
+        - aviator-ingest-emr-manual-tasks.yml
+        - aviator-ingest-emr-scheduled-tasks.yml
+        - aviator-utility.yml
+    check_every: 5m
+    webhook_token: ((dataworks.concourse_github_webhook_token))
+
+  - name: dataworks-aws-ingest-consumers
+    type: git
+    source:
+      branch: master
+      uri: https://github.com/dwp/dataworks-aws-ingest-consumers.git
+      access_token: ((dataworks-secrets.concourse_github_pat))
+    webhook_token: ((dataworks.concourse_github_webhook_token))
+    check_every: 5m
+
+  - name: dataworks-kafka-reconciliation-infrastructure
+    type: git
+    source:
+      branch: master
+      uri: https://github.com/dwp/dataworks-kafka-reconciliation-infrastructure.git
+      access_token: ((dataworks-secrets.concourse_github_pat))
+      paths:
+        - ci/kafka-reconciliation/*
+        - aviator-kafka-reconciliation.yml
+    webhook_token: ((dataworks.concourse_github_webhook_token))
+    check_every: 5m
+
+  - name: meta-development
+    type: meta
+
+  - name: meta-qa
+    type: meta
+
+  - name: meta-preprod
+    type: meta
+
+  - name: meta-production
+    type: meta
+
+  - name: meta-integration
+    type: meta
+
+resource_types:
+  - name: meta
+    type: docker-image
+    source:
+      repository: olhtbr/metadata-resource
+      tag: 2.0.1
