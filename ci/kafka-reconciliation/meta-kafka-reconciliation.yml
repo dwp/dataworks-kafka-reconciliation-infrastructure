@@ -143,6 +143,7 @@ meta-kafka-reconciliation:
               job_name=`cat "meta/build_job_name"`
               build_number=`cat "meta/build_name"`
               build_number_safe=`echo ${build_number/./-}`
+              export MANIFEST_DB_NAME="$(cat terraform-output-ingest-consumers/outputs.json | jq -r '.manifest_etl.value.database_name')"
               export MANIFEST_MISSING_IMPORTS_TABLE_NAME="$(cat terraform-output-ingest-consumers/outputs.json | jq -r '.manifest_etl.value.table_name_missing_imports_parquet')"
               export MANIFEST_MISSING_EXPORTS_TABLE_NAME="$(cat terraform-output-ingest-consumers/outputs.json | jq -r '.manifest_etl.value.table_name_missing_exports_parquet')"
               export MANIFEST_COUNTS_TABLE_NAME="$(cat terraform-output-ingest-consumers/outputs.json | jq -r '.manifest_etl.value.table_name_counts_parquet')"
@@ -150,7 +151,7 @@ meta-kafka-reconciliation:
               export MANIFEST_REPORT_COUNT_OF_IDS="10"
               export MANIFEST_S3_PREFIX="$(cat terraform-output-ingest/outputs.json | jq -r '.manifest_comparison_parameters.value.query_output_s3_prefix')"
               export MANIFEST_S3_BUCKET="$(cat terraform-output-internal-compute/outputs.json | jq -r '.manifest_bucket.value.id')"
-              job_id=$(aws batch submit-job --job-queue kafka-reconciliation --job-definition kafka-reconciliation --job-name ${pipeline_name}_${job_name}_${build_number_safe} --parameters manifest_missing_imports_table_name="\"${MANIFEST_MISSING_IMPORTS_TABLE_NAME}_streaming_all_incremental\"",manifest_missing_exports_table_name="\"${MANIFEST_MISSING_EXPORTS_TABLE_NAME}_streaming_all_incremental\"",manifest_counts_table_name="\"${MANIFEST_COUNTS_TABLE_NAME}_streaming_all_incremental\"",manifest_mismatched_timestamps_table_name="\"${MANIFEST_MISMATCHED_TIMESTAMPS_TABLE_NAME}_streaming_all_incremental\"",manifest_report_count_of_ids="\"${MANIFEST_REPORT_COUNT_OF_IDS}\"",manifest_s3_prefix="\"${MANIFEST_S3_PREFIX}_streaming_all_incremental\"",manifest_s3_bucket="\"${MANIFEST_S3_BUCKET}\"" | jq -e --raw-output .jobId)
+              job_id=$(aws batch submit-job --job-queue kafka-reconciliation --job-definition kafka-reconciliation --job-name ${pipeline_name}_${job_name}_${build_number_safe} --parameters manifest_missing_imports_table_name="\"${MANIFEST_DB_NAME}.${MANIFEST_MISSING_IMPORTS_TABLE_NAME}_streaming_all_incremental\"",manifest_missing_exports_table_name="\"${MANIFEST_DB_NAME}.${MANIFEST_MISSING_EXPORTS_TABLE_NAME}_streaming_all_incremental\"",manifest_counts_table_name="\"${MANIFEST_DB_NAME}.${MANIFEST_COUNTS_TABLE_NAME}_streaming_all_incremental\"",manifest_mismatched_timestamps_table_name="\"${MANIFEST_DB_NAME}.${MANIFEST_MISMATCHED_TIMESTAMPS_TABLE_NAME}_streaming_all_incremental\"",manifest_report_count_of_ids="\"${MANIFEST_REPORT_COUNT_OF_IDS}\"",manifest_s3_prefix="\"${MANIFEST_S3_PREFIX}_streaming_all_incremental\"",manifest_s3_bucket="\"${MANIFEST_S3_BUCKET}\"" | jq -e --raw-output .jobId)
               set +x
               if [[ -z $job_id ]]; then
                 echo "Error submitting job, empty job_id received"
