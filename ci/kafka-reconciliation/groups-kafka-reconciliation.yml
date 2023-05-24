@@ -1,0 +1,12 @@
+groups:
+  - name: kafka-reconciliation
+    jobs:
+      - start-kafka-reconciliation-development
+      - start-kafka-reconciliation-qa
+      - start-kafka-reconciliation-integration
+      - start-kafka-reconciliation-preprod
+      - start-kafka-reconciliation-production
+
+  - name: update-pipeline
+    jobs:
+      - update-pipeline

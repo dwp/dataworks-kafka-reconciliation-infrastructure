@@ -1,0 +1,196 @@
+meta-kafka-reconciliation:
+  plan:
+    terraform-bootstrap:
+      task: terraform-bootstrap
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: dwpdigital/jinja-yaml-aws
+            version: 0.0.19
+            tag: 0.0.19
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              python bootstrap_terraform.py
+              cp terraform.tf ../terraform-bootstrap
+          dir: dataworks-aws-ingest-consumers
+        inputs:
+          - name: dataworks-aws-ingest-consumers
+        outputs:
+          - name: terraform-bootstrap
+      params:
+        AWS_REGION: eu-west-2
+    terraform-common-config:
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.terraform_repository))
+            version: ((dataworks.terraform_version))
+            tag: ((dataworks.terraform_version))
+        params:
+          TF_INPUT: false
+          AWS_REGION: ((dataworks.aws_region))
+          TF_CLI_ARGS_apply: -lock-timeout=300s
+          TF_CLI_ARGS_plan: -lock-timeout=300s
+          TF_VAR_costcode: ((dataworks.costcode))
+          TF_VAR_slack_webhook_url: ((dataworks.slack_webhook_url))
+    terraform-output-ingest-consumers:
+      task: terraform-output-ingest-consumers
+      .: (( inject meta-kafka-reconciliation.plan.terraform-common-config ))
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.terraform_repository))
+            version: ((dataworks.terraform_version))
+            tag: ((dataworks.terraform_version))
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              cp ../terraform-bootstrap/terraform.tf .
+              terraform workspace show
+              terraform init
+              terraform output --json > ../terraform-output-ingest-consumers/outputs.json
+          dir: dataworks-aws-ingest-consumers
+        inputs:
+          - name: terraform-bootstrap
+          - name: dataworks-aws-ingest-consumers
+        outputs:
+          - name: terraform-output-ingest-consumers
+    terraform-output-internal-compute:
+      task: terraform-output-internal-compute
+      .: (( inject meta-kafka-reconciliation.plan.terraform-common-config ))
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.terraform_repository))
+            version: ((dataworks.terraform_version))
+            tag: ((dataworks.terraform_version))
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              terraform workspace show
+              terraform init
+              terraform output --json > ../terraform-output-internal-compute/outputs.json
+          dir: aws-internal-compute
+        inputs:
+          - name: aws-internal-compute
+        outputs:
+          - name: terraform-output-internal-compute  
+    terraform-output-ingest:
+      task: terraform-output-ingest
+      .: (( inject meta-kafka-reconciliation.plan.terraform-common-config ))
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.terraform_repository))
+            version: ((dataworks.terraform_version))
+            tag: ((dataworks.terraform_version))
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              terraform workspace show
+              terraform init
+              terraform output --json > ../terraform-output-ingest/outputs.json
+          dir: aws-ingestion
+        inputs:
+          - name: aws-ingestion
+        outputs:
+          - name: terraform-output-ingest
+    kafka-reconciliation:
+      task: kafka-reconciliation
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: ((dataworks.docker_awscli_repository))
+            version: ((dataworks.docker_awscli_version))
+        inputs:
+          - name: meta
+          - name: terraform-output-ingest-consumers
+          - name: terraform-output-internal-compute     
+          - name: terraform-output-ingest
+        params:
+          AWS_REGION: ((dataworks.aws_region))
+          AWS_DEFAULT_REGION: ((dataworks.aws_region))
+          TIMEOUT: 900   # Time (in minutes) to wait for job to complete
+          ASSUME_DURATION: 14400
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              source /assume-role
+              pipeline_name=`cat "meta/build_pipeline_name"`
+              job_name=`cat "meta/build_job_name"`
+              build_number=`cat "meta/build_name"`
+              build_number_safe=`echo ${build_number/./-}`
+              export MANIFEST_DB_NAME="$(cat terraform-output-ingest-consumers/outputs.json | jq -r '.manifest_etl.value.database_name')"
+              export MANIFEST_MISSING_IMPORTS_TABLE_NAME="$(cat terraform-output-ingest-consumers/outputs.json | jq -r '.manifest_etl.value.table_name_missing_imports_parquet')"
+              export MANIFEST_MISSING_EXPORTS_TABLE_NAME="$(cat terraform-output-ingest-consumers/outputs.json | jq -r '.manifest_etl.value.table_name_missing_exports_parquet')"
+              export MANIFEST_COUNTS_TABLE_NAME="$(cat terraform-output-ingest-consumers/outputs.json | jq -r '.manifest_etl.value.table_name_counts_parquet')"
+              export MANIFEST_MISMATCHED_TIMESTAMPS_TABLE_NAME="$(cat terraform-output-ingest-consumers/outputs.json | jq -r '.manifest_etl.value.table_name_mismatched_timestamps_parquet')"
+              export MANIFEST_REPORT_COUNT_OF_IDS="10"
+              export MANIFEST_S3_PREFIX="$(cat terraform-output-ingest/outputs.json | jq -r '.manifest_comparison_parameters.value.query_output_s3_prefix')"
+              export MANIFEST_S3_BUCKET="$(cat terraform-output-internal-compute/outputs.json | jq -r '.manifest_bucket.value.id')"
+              job_id=$(aws batch submit-job --job-queue kafka-reconciliation --job-definition kafka-reconciliation --job-name ${pipeline_name}_${job_name}_${build_number_safe} --parameters manifest_missing_imports_table_name="\"${MANIFEST_DB_NAME}.${MANIFEST_MISSING_IMPORTS_TABLE_NAME}_streaming_all_incremental\"",manifest_missing_exports_table_name="\"${MANIFEST_DB_NAME}.${MANIFEST_MISSING_EXPORTS_TABLE_NAME}_streaming_all_incremental\"",manifest_counts_table_name="\"${MANIFEST_DB_NAME}.${MANIFEST_COUNTS_TABLE_NAME}_streaming_all_incremental\"",manifest_mismatched_timestamps_table_name="\"${MANIFEST_DB_NAME}.${MANIFEST_MISMATCHED_TIMESTAMPS_TABLE_NAME}_streaming_all_incremental\"",manifest_report_count_of_ids="\"${MANIFEST_REPORT_COUNT_OF_IDS}\"",manifest_s3_prefix="\"${MANIFEST_S3_PREFIX}_streaming_all_incremental\"",manifest_s3_bucket="\"${MANIFEST_S3_BUCKET}\"" | jq -e --raw-output .jobId)
+              set +x
+              if [[ -z $job_id ]]; then
+                echo "Error submitting job, empty job_id received"
+                exit 1
+              fi
+              i=0
+              while [[ ${i} -le ${TIMEOUT} ]]
+              do
+                status=$(aws batch describe-jobs --jobs ${job_id} | jq -e --raw-output '.jobs[0].status')
+                case $status in
+                  FAILED)
+                    echo "job failed"
+                    exit 1
+                    ;;
+                  SUCCEEDED)
+                    echo "job succeeded"
+                    exit 0
+                    ;;
+                  SUBMITTED)
+                    echo "job is currently ${status}"
+                    ;;
+                  PENDING)
+                    echo "job is currently ${status}"
+                    ;;
+                  RUNNABLE)
+                    echo "job is currently ${status}"
+                    ;;
+                  STARTING)
+                    echo "job is currently ${status}"
+                    ;;
+                  RUNNING)
+                    echo "job is currently ${status}"
+                    ;;
+                  *)
+                    echo "unkwnown status $status"
+                    exit 1
+                    ;;
+                esac
+                i=$((i+1))
+                sleep 60
+              done
+              exit 1

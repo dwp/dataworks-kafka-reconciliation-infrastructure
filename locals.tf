@@ -8,13 +8,24 @@ locals {
   }
   
   common_tags = {
-    Environment  = local.environment
-    Application  = "dataworks-kafka-reconciliation-infrastructure"
-    CreatedBy    = "terraform"
-    Owner        = "dataworks platform"
-    Persistence  = "Ignore"
-    AutoShutdown = "False"
+    DWX_Environment = local.environment
+    DWX_Application = "dataworks-kafka-reconciliation-infrastructure"
   }
+
+  common_config_bucket         = data.terraform_remote_state.common.outputs.config_bucket
+  common_config_bucket_cmk_arn = data.terraform_remote_state.common.outputs.config_bucket_cmk.arn
+
+  ingest_internet_proxy  = data.terraform_remote_state.aws-ingestion.outputs.internet_proxy
+
+  cw_kafka_recon_agent_namespace                 = "/app/kafka-reconciliation"
+  cw_kafka_recon_agent_log_group_name            = "/app/kafka-reconciliation"  
+
+  cw_agent_metrics_collection_interval                  = 60
+  cw_agent_cpu_metrics_collection_interval              = 60
+  cw_agent_disk_measurement_metrics_collection_interval = 60
+  cw_agent_disk_io_metrics_collection_interval          = 60
+  cw_agent_mem_metrics_collection_interval              = 60
+  cw_agent_netstat_metrics_collection_interval          = 60
 
   manifest_bucket_id     = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket.id
   manifest_bucket_arn    = data.terraform_remote_state.aws-internal-compute.outputs.manifest_bucket.arn
@@ -74,5 +85,21 @@ locals {
     preprod        = "management"
     production     = "management"
     management     = "management"
+  }
+
+  kafka_recon_asg_autoshutdown = {
+    development = "False"
+    qa          = "False"
+    integration = "False"
+    preprod     = "False"
+    production  = "False"
+  }
+
+  kafka_recon_asg_ssmenabled = {
+    development = "True"
+    qa          = "True"
+    integration = "True"
+    preprod     = "False"
+    production  = "False"
   }
 }

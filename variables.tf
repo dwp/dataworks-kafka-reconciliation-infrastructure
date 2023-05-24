@@ -52,3 +52,9 @@ variable "costcode" {
   type    = string
   default = ""
 }
+
+variable "proxy_port" {
+  description = "proxy port"
+  type        = string
+  default     = "3128"
+}
