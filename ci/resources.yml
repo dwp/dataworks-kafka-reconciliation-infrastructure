@@ -16,15 +16,6 @@ resources:
     webhook_token: ((dataworks.concourse_github_webhook_token))
     check_every: 720h
 
-  - name: dataworks-kafka-reconciliation-infrastructure-dev
-    type: git
-    source:
-      branch: DTWRKS-976
-      uri: https://github.com/dwp/dataworks-kafka-reconciliation-infrastructure.git
-      access_token: ((dataworks-secrets.concourse_github_pat))
-    webhook_token: ((dataworks.concourse_github_webhook_token))
-    check_every: 720h
-
   - name: dataworks-kafka-reconciliation-infrastructure-update-pipeline
     type: git
     source:
