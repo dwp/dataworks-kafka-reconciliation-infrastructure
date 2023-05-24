@@ -19,6 +19,7 @@ jobs:
         config:
           params:
             TF_WORKSPACE: default
+      - .: (( inject meta-kafka-reconciliation.plan.terraform-bootstrap ))
       - .: (( inject meta-kafka-reconciliation.plan.terraform-output-ingest-consumers ))
         config:
           params:

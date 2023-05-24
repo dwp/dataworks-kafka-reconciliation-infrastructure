@@ -6,5 +6,7 @@
 **/*.tfstate*
 
 terraform.tf
-aviator_pipeline*.yml
+aviator_pipeline.yml
+aviator_pipeline_*.yml
+
 

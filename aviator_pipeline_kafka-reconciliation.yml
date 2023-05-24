@@ -85,11 +85,35 @@ jobs:
   - config:
       image_resource:
         source:
+          repository: dwpdigital/jinja-yaml-aws
+          tag: 0.0.19
+          version: 0.0.19
+        type: docker-image
+      inputs:
+      - name: dataworks-aws-ingest-consumers
+      outputs:
+      - name: terraform-bootstrap
+      platform: linux
+      run:
+        args:
+        - -exc
+        - |
+          python bootstrap_terraform.py
+          cp terraform.tf ../terraform-bootstrap
+        dir: dataworks-aws-ingest-consumers
+        path: sh
+    params:
+      AWS_REGION: eu-west-2
+    task: terraform-bootstrap
+  - config:
+      image_resource:
+        source:
           repository: ((dataworks.terraform_repository))
           tag: ((dataworks.terraform_version))
           version: ((dataworks.terraform_version))
         type: docker-image
       inputs:
+      - name: terraform-bootstrap
       - name: dataworks-aws-ingest-consumers
       outputs:
       - name: terraform-output-ingest-consumers
@@ -106,6 +130,7 @@ jobs:
         args:
         - -exc
         - |
+          cp ../terraform-bootstrap/terraform.tf .
           terraform workspace show
           terraform init
           terraform output --json > ../terraform-output-ingest-consumers/outputs.json
@@ -271,6 +296,7 @@ jobs:
           version: ((dataworks.terraform_version))
         type: docker-image
       inputs:
+      - name: terraform-bootstrap
       - name: dataworks-aws-ingest-consumers
       outputs:
       - name: terraform-output-ingest-consumers
@@ -287,6 +313,7 @@ jobs:
         args:
         - -exc
         - |
+          cp ../terraform-bootstrap/terraform.tf .
           terraform workspace show
           terraform init
           terraform output --json > ../terraform-output-ingest-consumers/outputs.json
@@ -452,6 +479,7 @@ jobs:
           version: ((dataworks.terraform_version))
         type: docker-image
       inputs:
+      - name: terraform-bootstrap
       - name: dataworks-aws-ingest-consumers
       outputs:
       - name: terraform-output-ingest-consumers
@@ -468,6 +496,7 @@ jobs:
         args:
         - -exc
         - |
+          cp ../terraform-bootstrap/terraform.tf .
           terraform workspace show
           terraform init
           terraform output --json > ../terraform-output-ingest-consumers/outputs.json
@@ -633,6 +662,7 @@ jobs:
           version: ((dataworks.terraform_version))
         type: docker-image
       inputs:
+      - name: terraform-bootstrap
       - name: dataworks-aws-ingest-consumers
       outputs:
       - name: terraform-output-ingest-consumers
@@ -649,6 +679,7 @@ jobs:
         args:
         - -exc
         - |
+          cp ../terraform-bootstrap/terraform.tf .
           terraform workspace show
           terraform init
           terraform output --json > ../terraform-output-ingest-consumers/outputs.json
@@ -814,6 +845,7 @@ jobs:
           version: ((dataworks.terraform_version))
         type: docker-image
       inputs:
+      - name: terraform-bootstrap
       - name: dataworks-aws-ingest-consumers
       outputs:
       - name: terraform-output-ingest-consumers
@@ -830,6 +862,7 @@ jobs:
         args:
         - -exc
         - |
+          cp ../terraform-bootstrap/terraform.tf .
           terraform workspace show
           terraform init
           terraform output --json > ../terraform-output-ingest-consumers/outputs.json
@@ -981,6 +1014,9 @@ resources:
   source:
     access_token: ((dataworks-secrets.concourse_github_pat))
     branch: master
+    ignore_path:
+    - ci/*
+    - aviator.yml
     uri: https://github.com/dwp/dataworks-aws-ingest-consumers.git
   type: git
   webhook_token: ((dataworks.concourse_github_webhook_token))

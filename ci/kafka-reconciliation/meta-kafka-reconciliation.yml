@@ -1,5 +1,29 @@
 meta-kafka-reconciliation:
   plan:
+    terraform-bootstrap:
+      task: terraform-bootstrap
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: dwpdigital/jinja-yaml-aws
+            version: 0.0.19
+            tag: 0.0.19
+        run:
+          path: sh
+          args:
+            - -exc
+            - |
+              python bootstrap_terraform.py
+              cp terraform.tf ../terraform-bootstrap
+          dir: dataworks-aws-ingest-consumers
+        inputs:
+          - name: dataworks-aws-ingest-consumers
+        outputs:
+          - name: terraform-bootstrap
+      params:
+        AWS_REGION: eu-west-2
     terraform-common-config:
       config:
         platform: linux
@@ -32,11 +56,13 @@ meta-kafka-reconciliation:
           args:
             - -exc
             - |
+              cp ../terraform-bootstrap/terraform.tf .
               terraform workspace show
               terraform init
               terraform output --json > ../terraform-output-ingest-consumers/outputs.json
           dir: dataworks-aws-ingest-consumers
         inputs:
+          - name: terraform-bootstrap
           - name: dataworks-aws-ingest-consumers
         outputs:
           - name: terraform-output-ingest-consumers
