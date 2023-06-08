@@ -126,7 +126,7 @@ provider "aws" {
   alias  = "management_dns"
 
   assume_role {
-    role_arn = "arn:aws:iam::${local.accounts["management"]}:role/${var.assume_role}"
+    role_arn = "arn:aws:iam::{{accounts.management}}:role/${var.assume_role}"
   }
 
   default_tags {
