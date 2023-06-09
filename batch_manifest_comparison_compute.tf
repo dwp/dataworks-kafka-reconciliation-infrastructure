@@ -323,7 +323,7 @@ resource "aws_security_group_rule" "kafka_recon_host_outbound_tanium_2" {
   security_group_id = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.kafka_reconciliation_batch.id
 }
 
-resource "aws_security_group_rule" kafka_recon_host_inbound_tanium_1" {
+resource "aws_security_group_rule" "kafka_recon_host_inbound_tanium_1" {
   description       = "Kafka recon Host from Tanium Server Port 1"
   type              = "ingress"
   from_port         = var.tanium_port_1
