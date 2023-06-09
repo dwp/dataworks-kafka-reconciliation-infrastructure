@@ -61,6 +61,19 @@ resource "aws_launch_template" "kafka_reconciliation_ecs_cluster" {
     cwa_mem_metrics_collection_interval              = local.cw_agent_mem_metrics_collection_interval
     cwa_netstat_metrics_collection_interval          = local.cw_agent_netstat_metrics_collection_interval
 
+    install_tenable                                  = local.tenable_install[local.environment]
+    install_trend                                    = local.trend_install[local.environment]
+    install_tanium                                   = local.tanium_install[local.environment]
+    tanium_server_1                                  = local.tanium1
+    tanium_server_2                                  = local.tanium2
+    tanium_env                                       = local.tanium_env[local.environment]
+    tanium_port                                      = var.tanium_port_1
+    tanium_log_level                                 = local.tanium_log_level[local.environment]
+    tenant                                           = local.tenant
+    tenantid                                         = local.tenantid
+    token                                            = local.token
+    policyid                                         = local.policy_id[local.environment]
+
   }))
 
   instance_initiated_shutdown_behavior = "terminate"
@@ -288,4 +301,44 @@ resource "aws_security_group_rule" "kafka_reconciliation_batch_ingress_internet_
   protocol                 = "tcp"
   source_security_group_id = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.kafka_reconciliation_batch.id
   security_group_id        = local.ingest_internet_proxy.sg
+}
+
+resource "aws_security_group_rule" "kafka_recon_host_outbound_tanium_1" {
+  description       = "Kafka recon Host to Tanium Server Port 1"
+  type              = "egress"
+  from_port         = var.tanium_port_1
+  to_port           = var.tanium_port_1
+  protocol          = "tcp"
+  prefix_list_ids   = local.tanium_prefix[local.environment]
+  security_group_id = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.kafka_reconciliation_batch.id
+}
+
+resource "aws_security_group_rule" "kafka_recon_host_outbound_tanium_2" {
+  description       = "Kafka recon Host to Tanium Server Port 2"
+  type              = "egress"
+  from_port         = var.tanium_port_2
+  to_port           = var.tanium_port_2
+  protocol          = "tcp"
+  prefix_list_ids   = local.tanium_prefix[local.environment]
+  security_group_id = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.kafka_reconciliation_batch.id
+}
+
+resource "aws_security_group_rule" "kafka_recon_host_inbound_tanium_1" {
+  description       = "Kafka recon Host from Tanium Server Port 1"
+  type              = "ingress"
+  from_port         = var.tanium_port_1
+  to_port           = var.tanium_port_1
+  protocol          = "tcp"
+  prefix_list_ids   = local.tanium_prefix[local.environment]
+  security_group_id = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.kafka_reconciliation_batch.id
+}
+
+resource "aws_security_group_rule" "kafka_recon_host_inbound_tanium_2" {
+  description       = "Kafka recon Host from Tanium Server Port 2"
+  type              = "ingress"
+  from_port         = var.tanium_port_2
+  to_port           = var.tanium_port_2
+  protocol          = "tcp"
+  prefix_list_ids   = local.tanium_prefix[local.environment]
+  security_group_id = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.kafka_reconciliation_batch.id
 }
