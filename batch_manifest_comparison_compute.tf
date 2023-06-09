@@ -303,8 +303,8 @@ resource "aws_security_group_rule" "kafka_reconciliation_batch_ingress_internet_
   security_group_id        = local.ingest_internet_proxy.sg
 }
 
-resource "aws_security_group_rule" "dks_host_outbound_tanium_1" {
-  description       = "DKS Host to Tanium Server Port 1"
+resource "aws_security_group_rule" "kafka_recon_host_outbound_tanium_1" {
+  description       = "Kafka recon Host to Tanium Server Port 1"
   type              = "egress"
   from_port         = var.tanium_port_1
   to_port           = var.tanium_port_1
@@ -313,8 +313,8 @@ resource "aws_security_group_rule" "dks_host_outbound_tanium_1" {
   security_group_id = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.kafka_reconciliation_batch.id
 }
 
-resource "aws_security_group_rule" "dks_host_outbound_tanium_2" {
-  description       = "DKS Host to Tanium Server Port 2"
+resource "aws_security_group_rule" "kafka_recon_host_outbound_tanium_2" {
+  description       = "Kafka recon Host to Tanium Server Port 2"
   type              = "egress"
   from_port         = var.tanium_port_2
   to_port           = var.tanium_port_2
@@ -323,8 +323,8 @@ resource "aws_security_group_rule" "dks_host_outbound_tanium_2" {
   security_group_id = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.kafka_reconciliation_batch.id
 }
 
-resource "aws_security_group_rule" "dks_host_inbound_tanium_1" {
-  description       = "DKS Host from Tanium Server Port 1"
+resource "aws_security_group_rule" kafka_recon_host_inbound_tanium_1" {
+  description       = "Kafka recon Host from Tanium Server Port 1"
   type              = "ingress"
   from_port         = var.tanium_port_1
   to_port           = var.tanium_port_1
@@ -333,8 +333,8 @@ resource "aws_security_group_rule" "dks_host_inbound_tanium_1" {
   security_group_id = data.terraform_remote_state.aws-ingestion.outputs.ingestion_vpc.vpce_security_groups.kafka_reconciliation_batch.id
 }
 
-resource "aws_security_group_rule" "dks_host_inbound_tanium_2" {
-  description       = "DKS Host from Tanium Server Port 2"
+resource "aws_security_group_rule" "kafka_recon_host_inbound_tanium_2" {
+  description       = "Kafka recon Host from Tanium Server Port 2"
   type              = "ingress"
   from_port         = var.tanium_port_2
   to_port           = var.tanium_port_2
