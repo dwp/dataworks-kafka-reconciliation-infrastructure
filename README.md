@@ -1,3 +1,5 @@
+# DO NOT USE THIS REPO - MIGRATED TO GITLAB
+
 # dataworks-kafka-reconciliation-infrastructure
 
 ## Kafka Reconciliation Process
